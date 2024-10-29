@@ -1,5 +1,6 @@
 from enums.geography import GeographyType
 from enums.rating import Rating
+import string
 
 class Zone:
     """
@@ -11,7 +12,8 @@ class Zone:
         population (int): The population size within the zone.
     """
 
-    def __init__(self, geography: GeographyType, severity: Rating, population: int):
+    def __init__(self, name: string, geography: GeographyType, severity: Rating, population: int):
+        self.name = name
         self.geography = geography
         self.severity = severity
         self.population = population
