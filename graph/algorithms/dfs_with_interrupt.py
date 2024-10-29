@@ -26,4 +26,4 @@ def dfs_with_interrupt(graph, start_zone, vehicle):
             if remaining_autonomy >= cost:
                 stack.append((neighbor, remaining_autonomy - cost))
     
-    return visited
+    return visited, 0, 0
