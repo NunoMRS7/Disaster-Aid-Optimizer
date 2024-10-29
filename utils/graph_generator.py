@@ -3,6 +3,7 @@ from graph.graph_builder import Graph
 from core.zone import Zone
 from enums.geography import GeographyType
 from enums.rating import Rating
+from utils.name_generator import NameGenerator
 
 def generate_random_graph(num_nodes: int) -> Graph:
     """
@@ -15,14 +16,16 @@ def generate_random_graph(num_nodes: int) -> Graph:
         Graph: A randomly generated graph with specified nodes and edges with random costs.
     """
     graph = Graph()
+    nameGenerator = NameGenerator()
     zones = []
 
     # Create random zones as graph nodes
     for _ in range(num_nodes):
+        name = nameGenerator.generate_name()
         geography = random.choice(list(GeographyType))
         severity = random.choice(list(Rating))
         population = random.randint(1000, 10000)
-        zone = Zone(geography, severity, population)
+        zone = Zone(name, geography, severity, population)
         zones.append(zone)
         graph.add_zone(zone)
     

@@ -10,9 +10,9 @@ def print_graph(graph: Graph):
         graph (Graph): The graph to print.
     """
     for zone, connections in graph.graph.items():
-        print(f"Zone {zone.geography} ({zone.severity}):")
+        print(f"Zone {zone.name} ({zone.severity}):")
         for neighbor, cost in connections:
-            print(f"  -> Connected to {neighbor.geography} with cost {cost:.2f} km")
+            print(f"  -> Connected to {neighbor.name} with cost {cost:.2f} km")
 
 def visualize_graph(graph: Graph):
     """
@@ -29,7 +29,7 @@ def visualize_graph(graph: Graph):
     # Position nodes randomly for display
     for idx, (zone, connections) in enumerate(graph.graph.items()):
         pos[zone] = (random.uniform(0, 10), random.uniform(0, 10))
-        labels[zone] = f"{zone.geography.name}"
+        labels[zone] = f"{zone.name}"
 
         for neighbor, cost in connections:
             edges.append((zone, neighbor, cost))
