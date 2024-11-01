@@ -15,9 +15,7 @@ def display_menu():
     print("0. Exit")
 
 def main():
-    graph = None
     drone = Vehicle(VehicleType.DRONE, autonomy=500.0, capacity=10)
-    visualizer = None
     
     while True:
         display_menu()
