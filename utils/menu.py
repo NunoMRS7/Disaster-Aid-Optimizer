@@ -1,10 +1,7 @@
 from core.vehicle import Vehicle
-from graph.algorithms.dfs_with_interrupt import dfs_with_interrupt
-from graph.algorithms.bfs_base import bfs
-from graph.algorithms.dfs_base import dfs
-from graph.algorithms.greedy_base import greedy_search
-from graph.algorithms.a_star_base import a_star
-from graph.algorithms.heuristic import heuristic
+from graph.algorithms.bfs import bfs
+from graph.algorithms.dfs import dfs
+from graph.algorithms.a_star import a_star
 from enums.vehicle_type import VehicleType
 from utils.graph_generator import generate_random_graph
 from utils.graph_visualizer import print_graph, visualize_graph
@@ -20,11 +17,9 @@ class Menu:
         print("2. Print the current graph")
         print("3. Visualize the current graph")
         print("4. Calculate drone autonomy")
-        print("5. Traverse the graph using DFS with interrupt (drone autonomy)")
-        print("6. Traverse the graph using DFS")
-        print("7. Traverse the graph using BFS")
-        print("8. Traverse the graph using Greedy Search")
-        print("9. Traverse the graph using A* Search")
+        print("5. Traverse the graph using DFS")
+        print("6. Traverse the graph using BFS")
+        print("7. Traverse the graph using A* Search")
         print("0. Exit")
 
     def run(self):
@@ -58,28 +53,31 @@ class Menu:
                 else:
                     print("Please generate a graph first.")
 
-            elif choice in ['5', '6', '7', '8', '9']:
+            elif choice in ['5', '6', '7']:
                 if self.random_graph is not None:
-                    start_zone = next(iter(self.random_graph.graph))  # Select an arbitrary start zone
-                    goal_zone = next(iter(self.random_graph.graph))  # Select an arbitrary end zone
                     
-                    if start_zone == goal_zone:
-                        goal_zone = next(iter(self.random_graph.graph)) # Ensure start and goal zones are different
+                    start_zone = self.random_graph.get_zone("C")
+                    goal_zone = self.random_graph.get_zone("A")
 
                     if choice == '5':
-                        visited_zones, _, _ = dfs_with_interrupt(self.random_graph, start_zone, self.drone)
+                        best_path, visited, max_depth, best_cost = dfs(self.random_graph, start_zone, self.drone)
+                        print("Algortihm: DFS")
                     elif choice == '6':
-                        visited_zones, _, _ = dfs(self.random_graph, start_zone, goal_zone)
+                        best_path, visited, max_depth, best_cost = bfs(self.random_graph, start_zone, goal_zone)
+                        print("Algortihm: BFS")
                     elif choice == '7':
-                        visited_zones, _, _ = bfs(self.random_graph, start_zone, goal_zone)
-                    elif choice == '8':
-                        visited_zones, _, _ = greedy_search(self.random_graph, start_zone, goal_zone, heuristic)
-                    elif choice == '9':
-                        visited_zones, _, _ = a_star(self.random_graph, start_zone, goal_zone, heuristic)
+                        best_path, visited, max_depth, best_cost = a_star(self.random_graph, start_zone, goal_zone)
+                        print("Algortihm: A* Search")
 
-                    print("\nZones visited in order:")
-                    for zone in visited_zones:
-                        print(zone.name, "-", zone.severity)
+                    if best_path is None:
+                        print("No path found.")
+                    else:
+                        print("Start zone:", start_zone.name)
+                        print("Goal zone:", goal_zone.name)
+                        print("Best path:", [zone.name for zone in best_path])
+                        print("Visited zones:", [zone.name for zone in visited])
+                        print("Max depth:", max_depth)
+                        print("Best cost:", best_cost)
                 else:
                     print("Please generate a graph first.")
 

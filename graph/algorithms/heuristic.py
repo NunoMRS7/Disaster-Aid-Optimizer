@@ -1,22 +1,43 @@
-def heuristic(current_zone, goal_zone):
+from enums.conditions import Conditions
+from enums.infrastructure import Infrastructure
+from enums.geography import Geography
+
+def edge_heuristic(cost, conditions, infrastructure, geography, availability):
     """
-    Heuristic function for Greedy Search based on zone properties and travel cost.
+    Computes a heuristic score between two zones based on edge properties.
 
     Args:
-        current_zone (Zone): The current zone in the graph.
-        goal_zone (Zone): The destination zone.
+        cost (float): The cost associated with the edge.
+        conditions (Conditions): Conditions of the edge.
+        infrastructure (Infrastructure): Infrastructure type of the edge.
+        geography (Geography): Geography type of the edge.
+        availability (bool): Availability of the edge.
 
     Returns:
-        float: A heuristic estimate of the cost to reach the goal zone.
+        float: Heuristic score between the two zones, or float('inf') if unavailable.
     """
-    # Ensure that both current_zone and goal_zone are valid
-    if current_zone is None or goal_zone is None:
-        raise ValueError("Current zone and goal zone must be valid Zone instances.")
+    # If the connection is not available, return infinity to avoid this edge
+    if not availability:
+        return float('inf')
+
+    # Normalize and weigh edge components based on Conditions
+    condition_weight = {
+        Conditions.VERY_GOOD: 0.8,
+        Conditions.GOOD: 1.0,
+        Conditions.REASONABLE: 1.2,
+        Conditions.BAD: 1.5,
+        Conditions.VERY_BAD: 2.0,
+    }
     
-    severity_difference = abs(current_zone.severity.value - goal_zone.severity.value)
+    infrastructure_weight = 0.8 if infrastructure == Infrastructure.HIGHWAY else 1.2  # Favor high-quality infrastructure
+    
+    # Geography weight
+    geography_weight = 1.0  # Default weight
+    if geography == Geography.MOUNTAINOUS:
+        geography_weight = 1.5  # Penalize mountainous terrain
+    elif geography == Geography.PLATEAU:
+        geography_weight = 0.9  # Favor plateau terrain
 
-    population_difference = abs(current_zone.population - goal_zone.population)
-
-    heuristic_value = severity_difference * 1.5 + population_difference * 0.5
-
-    return heuristic_value
+    # Combine the weights with cost to produce the heuristic score
+    edge_score = cost * condition_weight[conditions] * infrastructure_weight * geography_weight
+    return edge_score
