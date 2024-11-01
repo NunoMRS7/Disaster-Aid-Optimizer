@@ -73,7 +73,7 @@ def main():
         elif choice == "0":
             break
         else:
-            print("Invalid choice. Please try again.")
+            print("Invalid option. Please try again.")
 
 if __name__ == "__main__":
     main()
