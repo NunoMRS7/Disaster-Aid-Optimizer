@@ -1,6 +1,6 @@
 def dfs(graph, start_zone, goal_zone):
     """
-    Depth-First Search algorithm to find the best path in terms of minimum cost.
+    Depth-First Search algorithm to find the best path in terms of minimum cost (iterative version).
 
     Args:
         graph (Graph): The graph containing zones and connections.
@@ -8,37 +8,32 @@ def dfs(graph, start_zone, goal_zone):
         goal_zone (Zone): The target zone.
 
     Returns:
-        tuple: (best_path, visited_zones, max_depth, total_cost)
+        tuple: (best_path, visited_zones, total_cost)
     """
-    visited = set()
-    best_path = []
-    best_cost = float('inf')
-    max_depth = 0
-
-    def dfs_recursive(zone, path, depth, cost):
-        nonlocal best_path, best_cost, max_depth
-
-        # Update max depth
-        max_depth = max(max_depth, depth)
+    stack = [(start_zone, [start_zone], 0)]  # Stack holds tuples of (current_zone, path, current_cost)
+    visited_zones = set()
+    best_path = None
+    min_cost = float('inf')
+    
+    while stack:
+        current_zone, path, current_cost = stack.pop()
         
-        # Base case: if goal reached
-        if zone == goal_zone:
-            if cost < best_cost:
-                best_cost = cost
-                best_path = path[:]
-            return
+        if current_zone in visited_zones:
+            continue
+        
+        visited_zones.add(current_zone)
+        
+        # If the goal zone is reached, check if this path is the minimum cost path
+        if current_zone == goal_zone:
+            if current_cost < min_cost:
+                best_path = path
+                min_cost = current_cost
+            continue
 
-        # Visit neighbors
-        for neighbor, edge_cost, _, _, _, _ in graph.graph[zone]:
-            if neighbor not in visited:
-                visited.add(neighbor)
-                path.append(neighbor)
-                
-                dfs_recursive(neighbor, path, depth + 1, cost + edge_cost)
-                
-                path.pop()
-    
-    visited.add(start_zone)
-    dfs_recursive(start_zone, [start_zone], 0, 0)
-    
-    return best_path, visited, max_depth, best_cost
+        # Explore neighbors of the current zone
+        for neighbor, cost in graph.get_connections(current_zone):
+            if neighbor not in visited_zones:
+                total_cost = current_cost + cost
+                stack.append((neighbor, path + [neighbor], total_cost))
+
+    return best_path, visited_zones, min_cost

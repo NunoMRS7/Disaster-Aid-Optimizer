@@ -60,13 +60,13 @@ class Menu:
                     goal_zone = self.random_graph.get_zone("A")
 
                     if choice == '5':
-                        best_path, visited, max_depth, best_cost = dfs(self.random_graph, start_zone, self.drone)
+                        best_path, visited, best_cost = dfs(self.random_graph, start_zone, goal_zone)
                         print("Algortihm: DFS")
                     elif choice == '6':
-                        best_path, visited, max_depth, best_cost = bfs(self.random_graph, start_zone, goal_zone)
+                        best_path, visited, best_cost = bfs(self.random_graph, start_zone, goal_zone)
                         print("Algortihm: BFS")
                     elif choice == '7':
-                        best_path, visited, max_depth, best_cost = a_star(self.random_graph, start_zone, goal_zone)
+                        best_path, visited, best_cost = a_star(self.random_graph, start_zone, goal_zone)
                         print("Algortihm: A* Search")
 
                     if best_path is None:
@@ -76,7 +76,6 @@ class Menu:
                         print("Goal zone:", goal_zone.name)
                         print("Best path:", [zone.name for zone in best_path])
                         print("Visited zones:", [zone.name for zone in visited])
-                        print("Max depth:", max_depth)
                         print("Best cost:", best_cost)
                 else:
                     print("Please generate a graph first.")

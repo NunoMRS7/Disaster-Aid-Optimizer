@@ -14,7 +14,7 @@ def a_star(graph, start_zone, goal_zone, weight_distance=0.5, weight_zone_heuris
         weight_edge (float): Weight for the edge heuristic.
 
     Returns:
-        tuple: (best_path, visited_zones, max_depth, total_cost)
+        tuple: (best_path, visited_zones, total_cost)
     """
     open_set = [(0, start_zone)]
     heapq.heapify(open_set)
@@ -24,10 +24,9 @@ def a_star(graph, start_zone, goal_zone, weight_distance=0.5, weight_zone_heuris
 
     best_path = []
     visited = set()
-    max_depth = 0
 
     while open_set:
-        current_cost, current_zone = heapq.heappop(open_set)
+        current_f_score, current_zone = heapq.heappop(open_set)
         visited.add(current_zone)
         
         # Goal reached
@@ -37,7 +36,7 @@ def a_star(graph, start_zone, goal_zone, weight_distance=0.5, weight_zone_heuris
                 best_path.insert(0, current_zone)
                 current_zone = came_from[current_zone]
             best_path.insert(0, start_zone)
-            return best_path, visited, max_depth, g_score[goal_zone]
+            return best_path, visited, g_score[goal_zone]
         
         # Expand neighbors
         for neighbor, cost, *edge_data in graph.graph[current_zone]:
@@ -57,6 +56,5 @@ def a_star(graph, start_zone, goal_zone, weight_distance=0.5, weight_zone_heuris
                 f_score = tentative_g_score + h_score
                 
                 heapq.heappush(open_set, (f_score, neighbor))
-                max_depth = max(max_depth, len(came_from))
 
-    return None, visited, max_depth, float('inf')
+    return None, visited, float('inf')

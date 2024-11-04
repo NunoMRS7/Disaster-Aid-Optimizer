@@ -52,3 +52,15 @@ class Graph:
         for zone in self.graph:
             if zone.name == name:
                 return zone
+
+    def get_connections(self, zone: Zone):
+        """
+        Get all neighboring zones and their travel cost from the given zone.
+        
+        Args:
+            zone (Zone): The zone from which to get neighbors.
+        
+        Returns:
+            list of tuples: Each tuple contains a neighboring zone and the cost of travel.
+        """
+        return [(neighbor, cost) for neighbor, cost, _, _, _, availability in self.graph[zone] if availability]
