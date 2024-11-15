@@ -1,3 +1,7 @@
 # Ignore Python cache directories
 __pycache__/
 *.py[cod]
+
+
+# Ignore neovim undotree files
+Users/

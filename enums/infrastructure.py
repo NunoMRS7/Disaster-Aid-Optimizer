@@ -1,5 +1,5 @@
 from enum import Enum
 
-class InfrastructureType(Enum):
-    HIGHWAY = 'Highway'
-    NATIONAL_ROAD = 'National Road'
+class Infrastructure(Enum):
+    HIGHWAY = 1
+    NATIONAL_ROAD = 2
