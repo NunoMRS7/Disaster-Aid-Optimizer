@@ -5,3 +5,13 @@ __pycache__/
 
 # Ignore neovim undotree files
 Users/
+
+# Graph data
+*.json
+*.geojson
+*.zip
+geojson/
+
+# Ignore macOS system files
+*.DS_Store
+

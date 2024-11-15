@@ -1,0 +1,10 @@
+Users/
+
+*.json
+*.geojson
+*.zip
+
+geojson/
+
+*.DS_Store
+
