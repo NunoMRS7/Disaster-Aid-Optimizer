@@ -23,7 +23,7 @@ To run this project, make sure you have Python 3.x installed. You will also need
 ### Steps
 ```bash
 git clone git@github.com:2101dudu/PortugueseGraph.git
-cd PortugalMunicipalitiesGraph
+cd PortugalGraph
 ```
 
 You can install the required packages using pip:
@@ -36,12 +36,13 @@ pip install networkx matplotlib numpy requests geopandas
 1. Unzip, compile and run the project:
 ```bash
 make 
+make [plot/plot_labels]
 ```
-1. Or do it step by step:
+2. Or do it step by step:
 ```bash
+make create_after_dir
 make unzip
 make compile
-make run
 make [plot/plot_labels]
 ```
 
