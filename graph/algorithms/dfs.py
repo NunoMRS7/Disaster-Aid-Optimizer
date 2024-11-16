@@ -31,9 +31,9 @@ def dfs(graph, start_zone, goal_zone):
             continue
 
         # Explore neighbors of the current zone
-        for neighbor, cost in graph.get_connections(current_zone):
+        for neighbor, road in graph.get_connections(current_zone):
             if neighbor not in visited_zones:
-                total_cost = current_cost + cost
+                total_cost = current_cost + road.cost
                 stack.append((neighbor, path + [neighbor], total_cost))
 
     return best_path, visited_zones, min_cost

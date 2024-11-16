@@ -1,7 +1,5 @@
 from core.zone import Zone
-from enums.conditions import Conditions
-from enums.geography import Geography
-from enums.infrastructure import Infrastructure
+import core.road as Road
 
 class Graph:
     """
@@ -21,23 +19,20 @@ class Graph:
         if zone not in self.graph:
             self.graph[zone] = []
     
-    def add_connection(self, zone1: Zone, zone2: Zone, cost: float, conditions: Conditions, geography: Geography, infrastructure: Infrastructure, availability: bool):
+    def add_connection(self, zone1: Zone, zone2: Zone, road: Road):
         """
         Create a bidirectional connection between two zones with a cost, weather conditions, geography, infrastructure, and availability.
         
         Args:
             zone1 (Zone): First zone.
             zone2 (Zone): Second zone.
-            cost (float): The cost of traveling between the two zones.
-            conditions (Conditions): The weather conditions between the two zones.
-            geography (Geography): The geographical features between the two zones.
-            infrastructure (Infrastructure): The infrastructure between the two zones.
-            availability (bool): The availability of the connection.
+            road (Road): Road object representing the connection between the two zones
         """
         self.add_zone(zone1)
         self.add_zone(zone2)
-        self.graph[zone1].append((zone2, cost, conditions, geography, infrastructure, availability))
-        self.graph[zone2].append((zone1, cost, conditions, geography, infrastructure, availability))
+        
+        self.graph[zone1].append((zone2, road))
+        self.graph[zone2].append((zone1, road))
 
     def get_zone(self, name: str):
         """
@@ -61,6 +56,6 @@ class Graph:
             zone (Zone): The zone from which to get neighbors.
         
         Returns:
-            list of tuples: Each tuple contains a neighboring zone and the cost of travel.
+            list of tuples: Each tuple contains a neighboring zone and the road object.
         """
-        return [(neighbor, cost) for neighbor, cost, _, _, _, availability in self.graph[zone] if availability]
+        return [(neighbor, road) for neighbor, road in self.graph[zone] if road.availability]

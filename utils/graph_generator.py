@@ -7,6 +7,7 @@ from enums.conditions import Conditions
 from enums.infrastructure import Infrastructure
 from utils.name_generator import NameGenerator
 from utils.coordinate import Coordinate
+from core.road import Road
 
 def generate_random_graph(num_nodes: int) -> Graph:
     """
@@ -37,42 +38,28 @@ def generate_random_graph(num_nodes: int) -> Graph:
     for i in range(num_nodes):
         for j in range(i + 1, num_nodes):
             if random.random() > 0.5:  # 50% chance to create an edge
-                cost = random.uniform(10.0, 100.0)  # Cost between 10 and 100
-                conditions = random.choice(list(Conditions))
-                geography = random.choice(list(Geography))
-                infrastructure = random.choice(list(Infrastructure))
-                availability = random.choices([True, False], weights=[0.7, 0.3])[0]
+                road = Road()
+                road.cost = random.uniform(10.0, 100.0)
+                road.conditions = random.choice(list(Conditions))
+                road.geography = random.choice(list(Geography))
+                road.infrastructure = random.choice(list(Infrastructure))
+                road.availability = random.choices([True, False], weights=[0.7, 0.3])[0]
 
-                graph.add_connection(
-                    zones[i], 
-                    zones[j], 
-                    cost, 
-                    conditions, 
-                    geography, 
-                    infrastructure, 
-                    availability
-                )
+                graph.add_connection(zones[i], zones[j], road)
 
     # Ensure every zone has at least one connection
     for zone in zones:
         if not graph.graph[zone]:  # Check if the zone has no connections
             # Choose another random zone to connect with
             target_zone = random.choice([z for z in zones if z != zone])
-            cost = random.uniform(10.0, 100.0)
-            conditions = random.choice(list(Conditions))
-            geography = random.choice(list(Geography))
-            infrastructure = random.choice(list(Infrastructure))
-            availability = random.choices([True, False], weights=[0.7, 0.3])[0]
+            road = Road()
+            road.cost = random.uniform(10.0, 100.0)
+            road.conditions = random.choice(list(Conditions))
+            road.geography = random.choice(list(Geography))
+            road.infrastructure = random.choice(list(Infrastructure))
+            road.availability = random.choices([True, False], weights=[0.7, 0.3])[0]
 
             # Create a connection between the isolated zone and the chosen target zone
-            graph.add_connection(
-                zone, 
-                target_zone, 
-                cost, 
-                conditions, 
-                geography, 
-                infrastructure, 
-                availability
-            )
+            graph.add_connection(zone, target_zone, road)
     
     return graph
