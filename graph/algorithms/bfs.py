@@ -25,9 +25,9 @@ def bfs(graph, start_zone, goal_zone):
         if current_zone == goal_zone:
             return path, visited_zones, cost
 
-        for neighbor, edge_cost, _, _, _, availability in graph.graph[current_zone]:
-            if neighbor not in visited and availability:
-                new_cost = cost + edge_cost
+        for neighbor, road in graph.get_connections(current_zone):
+            if neighbor not in visited and road.availability:
+                new_cost = cost + road.cost
                 queue.append((neighbor, path + [neighbor], depth + 1, new_cost))
 
     return [], visited_zones, total_cost

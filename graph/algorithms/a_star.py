@@ -39,8 +39,8 @@ def a_star(graph, start_zone, goal_zone, weight_distance=0.5, weight_zone_heuris
             return best_path, visited, g_score[goal_zone]
         
         # Expand neighbors
-        for neighbor, cost, *edge_data in graph.graph[current_zone]:
-            edge_heuristic_cost = edge_heuristic(cost, *edge_data)
+        for neighbor, road in graph.get_connections(current_zone):
+            edge_heuristic_cost = edge_heuristic(road.cost, road.conditions, road.geography, road.infrastructure, road.availability)
             
             tentative_g_score = g_score[current_zone] + edge_heuristic_cost
             if tentative_g_score < g_score[neighbor]:
