@@ -1,39 +1,20 @@
 import json
 import networkx as nx
 import matplotlib.pyplot as plt
-import argparse
 import numpy as np
+import random
+from enums.severity import Severity
+from core.zone import Zone
+from utils.coordinate import Coordinate
+from core.road import Road
+from enums.conditions import Conditions
+from enums.geography import Geography
+from enums.infrastructure import Infrastructure
 
 # Constants
 DEFAULT_NODE_SIZE = 50  # Default size for nodes with N/A population
 MAX_POPULATION = 1e7  # Scale factor for node size based on population
 POPULATION_SCALE = 5000  # Scale factor for node size based on population
-
-# Updated Municipality Node Class
-class MunicipalityNode:
-    def __init__(self, name, latitude, longitude, population):
-        self.name = name
-        self.latitude = latitude
-        self.longitude = longitude
-        self.population = population  # Population attribute
-        self.neighbors = []
-
-    def add_neighbor(self, neighbor):
-        self.neighbors.append(neighbor)
-
-# Graph Class to Store Municipalities
-class PortugalGraph:
-    def __init__(self):
-        self.nodes = {}
-
-    def add_municipality(self, name, latitude, longitude, population):
-        node = MunicipalityNode(name, latitude, longitude, population)
-        self.nodes[name] = node
-
-    def add_edge(self, municipality1, municipality2):
-        if municipality1 in self.nodes and municipality2 in self.nodes:
-            self.nodes[municipality1].add_neighbor(self.nodes[municipality2])
-            self.nodes[municipality2].add_neighbor(self.nodes[municipality1])
 
 # Load municipalities from JSON file
 def load_municipalities_from_json(graph, filename):
@@ -52,35 +33,59 @@ def load_municipalities_from_json(graph, filename):
                 except ValueError:
                     population = 0  # In case of any unexpected string format
 
-            graph.add_municipality(name, latitude, longitude, population)
+            coordinate = Coordinate(latitude, longitude)
+            severity = random.choice(list(Severity))
 
-            # Add edges based on neighbors
-            for neighbor in info["vizinhos"]:
-                graph.add_edge(name, neighbor)
+            zone = Zone(name, coordinate, severity, population)
+            graph.add_zone(zone)
+        
+def load_roads_from_json(graph, filename):
+    with open(filename, "r", encoding="utf-8") as jsonfile:
+        data = json.load(jsonfile)
+        for name, info in data.items():
+            for neighbor_name in info["vizinhos"]:
+                zone = graph.get_zone(name)
+                neighbor = graph.get_zone(neighbor_name)
+
+                if zone and neighbor:
+                    # Check if the connection already exists to avoid duplication
+                    if not graph.has_connection(zone, neighbor):
+                        road = Road()
+                        road.cost = zone.calculate_distance_between_zones(neighbor)
+                        road.conditions = random.choice(list(Conditions))
+                        road.geography = random.choice(list(Geography))
+                        road.infrastructure = random.choice(list(Infrastructure))
+                        road.availability = random.choices([True, False], weights=[0.7, 0.3])[0]
+
+                        graph.add_connection(zone, neighbor, road)
+                
 
 # Visualize the graph with NetworkX and Matplotlib
-def visualize_graph(graph, show_labels):
+def visualize_generated_graph(graph, show_labels=False, show_conditions=False, show_geography=False, show_infrastructure=False, show_cost=False):
     G = nx.Graph()
     pos = {}
     node_sizes = []
 
     # Set up nodes with positions and sizes
-    for node in graph.nodes.values():
-        G.add_node(node.name)
-        pos[node.name] = (node.longitude, node.latitude)
+    for zone in graph.graph.keys():
+        G.add_node(zone.name)
+        pos[zone.name] = (zone.coordinate.longitude, zone.coordinate.latitude)
         
         # Calculate size based on population, use default if population is 0
-        if node.population > 0:
-            size = (node.population / MAX_POPULATION) * POPULATION_SCALE
+        if zone.population > 0:
+            size = (zone.population / MAX_POPULATION) * POPULATION_SCALE
         else:
             size = DEFAULT_NODE_SIZE
             
         node_sizes.append(size)
 
-    # Add edges for neighbor connections
-    for node in graph.nodes.values():
-        for neighbor in node.neighbors:
-            G.add_edge(node.name, neighbor.name)
+    # Add edges for neighbor connections with colors
+    for zone, connections in graph.graph.items():
+        for neighbor, road in connections:
+            G.add_edge(zone.name, neighbor.name, availability=road.availability)
+
+    # Determine edge colors based on availability attribute
+    edge_colors = ["green" if G[node1][node2]['availability'] else "red" for node1, node2 in G.edges()]
 
     # Rescale positions for centering
     pos_array = np.array(list(pos.values()))
@@ -90,7 +95,7 @@ def visualize_graph(graph, show_labels):
     # Plot settings
     plt.figure(figsize=(10, 10))
     nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color="blue", alpha=0.7)
-    nx.draw_networkx_edges(G, pos, width=0.5, alpha=0.5)
+    nx.draw_networkx_edges(G, pos, width=0.5, edge_color=edge_colors, style=["solid" if avail else "dashed" for avail in nx.get_edge_attributes(G, "availability").values()])
 
     # Option to show or hide labels
     if show_labels:
@@ -98,26 +103,28 @@ def visualize_graph(graph, show_labels):
                                 verticalalignment="center",
                                 bbox=dict(facecolor="blue", edgecolor="none", boxstyle="round,pad=0.2"))
 
+    # Option to show conditions, geography, infrastructure, and cost
+    if show_conditions or show_geography or show_infrastructure or show_cost:
+        for zone, connections in graph.graph.items():
+            for neighbor, road in connections:
+                mid_x, mid_y = (pos[zone.name][0] + pos[neighbor.name][0]) / 2, (pos[zone.name][1] + pos[neighbor.name][1]) / 2
+                text_y_offset = 0
+                if show_conditions:
+                    plt.text(mid_x, mid_y + text_y_offset, f"{road.conditions}", color="orange", fontsize=6, ha='center', va='center')
+                    text_y_offset -= 0.1
+                if show_geography:
+                    plt.text(mid_x, mid_y + text_y_offset, f"{road.geography}", color="brown", fontsize=6, ha='center', va='center')
+                    text_y_offset -= 0.1
+                if show_infrastructure:
+                    plt.text(mid_x, mid_y + text_y_offset, f"{road.infrastructure}", color="purple", fontsize=6, ha='center', va='center')
+                    text_y_offset -= 0.1
+                if show_cost:
+                    plt.text(mid_x, mid_y + text_y_offset, f"{road.cost:.2f}", color="black", fontsize=6, ha='center', va='center')
+
     plt.title("Portugal Municipalities Graph (Continental Only)")
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     plt.axis("equal")  # Keep x and y scales equal for better visualization
+    plt.tight_layout()  # Adjust layout to fit everything within the plot
     plt.show()
 
-# Main function
-def main():
-    parser = argparse.ArgumentParser(description="Portugal Municipalities Graph Visualization")
-    parser.add_argument("--show-labels", action="store_true",
-                        help="If set, display names. Otherwise, labels are hidden.")
-    args = parser.parse_args()
-
-    portugal_graph = PortugalGraph()
-
-    # Load municipalities from JSON file
-    load_municipalities_from_json(portugal_graph, "data/after/final_output.json")
-
-    # Visualize the graph with the show_labels argument
-    visualize_graph(portugal_graph, args.show_labels)
-
-if __name__ == "__main__":
-    main()

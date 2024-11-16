@@ -32,7 +32,7 @@ def dfs(graph, start_zone, goal_zone):
 
         # Explore neighbors of the current zone
         for neighbor, road in graph.get_connections(current_zone):
-            if neighbor not in visited_zones:
+            if neighbor not in visited_zones and road.availability:
                 total_cost = current_cost + road.cost
                 stack.append((neighbor, path + [neighbor], total_cost))
 

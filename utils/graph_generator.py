@@ -8,6 +8,11 @@ from enums.infrastructure import Infrastructure
 from utils.name_generator import NameGenerator
 from utils.coordinate import Coordinate
 from core.road import Road
+from map.src.plot_portugal_graph import load_municipalities_from_json
+from map.src.plot_portugal_graph import load_roads_from_json
+
+
+data_path = "map/data/after/final_output.json"
 
 def generate_random_graph(num_nodes: int) -> Graph:
     """
@@ -62,4 +67,22 @@ def generate_random_graph(num_nodes: int) -> Graph:
             # Create a connection between the isolated zone and the chosen target zone
             graph.add_connection(zone, target_zone, road)
     
+    return graph
+
+
+
+def generate_map_graph() -> Graph:
+    """
+    Generates a map graph with predefined nodes and edges.
+
+    Returns:
+        Graph: A map graph with predefined nodes and edges.
+    """
+    graph = Graph()
+
+    # Load municipalities from JSON file
+    load_municipalities_from_json(graph, data_path)
+
+    load_roads_from_json(graph, data_path)
+
     return graph
