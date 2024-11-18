@@ -58,4 +58,18 @@ class Graph:
         Returns:
             list of tuples: Each tuple contains a neighboring zone and the road object.
         """
-        return [(neighbor, road) for neighbor, road in self.graph[zone] if road.availability]
+        return [(neighbor, road) for neighbor, road in self.graph[zone]]
+    
+    def has_connection(self, zone1, zone2):
+        """
+        Check if there is a connection between two zones.
+
+        Args:
+            zone1 (Zone): First zone.
+            zone2 (Zone): Second zone.
+
+        Returns:
+            bool: True if there is a connection, False otherwise.
+        """
+        return any(neighbor == zone2 for neighbor, _ in self.graph.get(zone1, []))
+

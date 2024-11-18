@@ -15,7 +15,7 @@ class Zone:
         heuristic (float): The heuristic value of the zone.
     """
 
-    def __init__(self, name: string, coordinate: Coordinate, severity: Severity, population: int):
+    def __init__(self, name: string="", coordinate: Coordinate=Coordinate(), severity: Severity=3, population: int=0):
         self.name = name
         self.coordinate = coordinate
         self.severity = severity
@@ -45,3 +45,15 @@ class Zone:
             goal_zone (Zone): The goal zone.
         """
         self.distanceToGoal = self.coordinate.calculate_distance(goal_zone.coordinate)
+
+    def calculate_distance_between_zones(self, other_zone):
+        """
+        Calculates the distance between two zones.
+        
+        Args:
+            other_zone (Zone): The other zone.
+        
+        Returns:
+            float: The distance between the two zones.
+        """
+        return self.coordinate.calculate_distance(other_zone.coordinate)
