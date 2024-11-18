@@ -11,7 +11,7 @@ Users/
 *.geojson
 *.zip
 geojson/
+data/
 
 # Ignore macOS system files
 *.DS_Store
-
