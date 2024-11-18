@@ -2,6 +2,7 @@ from core.vehicle import Vehicle
 from graph.algorithms.bfs import bfs
 from graph.algorithms.dfs import dfs
 from graph.algorithms.a_star import a_star
+from graph.algorithms.greedy import greedy
 from enums.vehicle_type import VehicleType
 from utils.graph_generator import generate_random_graph
 from utils.graph_visualizer import print_graph, visualize_graph
@@ -20,6 +21,7 @@ class Menu:
         print("5. Traverse the graph using DFS")
         print("6. Traverse the graph using BFS")
         print("7. Traverse the graph using A* Search")
+        print("8. Traverse the graph using Greedy Search")
         print("0. Exit")
 
     def run(self):
@@ -53,7 +55,7 @@ class Menu:
                 else:
                     print("Please generate a graph first.")
 
-            elif choice in ['5', '6', '7']:
+            elif choice in ['5', '6', '7', '8']:
                 if self.random_graph is not None:
                     
                     start_zone = self.random_graph.get_zone("C")
@@ -61,13 +63,16 @@ class Menu:
 
                     if choice == '5':
                         best_path, visited, best_cost = dfs(self.random_graph, start_zone, goal_zone)
-                        print("Algortihm: DFS")
+                        print("Algorithm: DFS")
                     elif choice == '6':
                         best_path, visited, best_cost = bfs(self.random_graph, start_zone, goal_zone)
-                        print("Algortihm: BFS")
+                        print("Algorithm: BFS")
                     elif choice == '7':
                         best_path, visited, best_cost = a_star(self.random_graph, start_zone, goal_zone)
-                        print("Algortihm: A* Search")
+                        print("Algorithm: A* Search")
+                    elif choice == '8':
+                        best_path, visited, best_cost = greedy(self.random_graph, start_zone, goal_zone)
+                        print("Algorithm: Greedy Search")
 
                     if best_path is None:
                         print("No path found.")
