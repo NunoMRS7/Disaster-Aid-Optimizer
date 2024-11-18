@@ -1,7 +1,7 @@
 import math
 
 class Coordinate:
-    def __init__(self, latitude: float, longitude: float):
+    def __init__(self, latitude: float=0, longitude: float=0):
         self.latitude = latitude
         self.longitude = longitude
 
