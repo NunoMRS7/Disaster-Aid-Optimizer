@@ -15,7 +15,7 @@ class Zone:
         heuristic (float): The heuristic value of the zone.
     """
 
-    def __init__(self, name: string, coordinate: Coordinate, severity: Severity, population: int):
+    def __init__(self, name: string="", coordinate: Coordinate=Coordinate(), severity: Severity=3, population: int=0):
         self.name = name
         self.coordinate = coordinate
         self.severity = severity

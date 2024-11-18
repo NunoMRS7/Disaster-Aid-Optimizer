@@ -30,25 +30,22 @@ def generate_random_graph(num_nodes: int) -> Graph:
 
     # Create random zones as graph nodes
     for _ in range(num_nodes):
-        name = name_generator.generate_name()
-        coordinate = Coordinate(random.uniform(-90, 90), random.uniform(-180, 180))
-        severity = random.choice(list(Severity))
-        population = random.randint(1000, 100000)
-        
-        zone = Zone(name, coordinate, severity, population)
+        zone = Zone()
+        zone.name = name_generator.generate_name()
+        zone.coordinate = Coordinate(random.uniform(-90, 90), random.uniform(-180, 180))
+        zone.population = random.randint(1000, 100000)
+
         zones.append(zone)
         graph.add_zone(zone)
-    
+
     # Connect zones with random edge properties
     for i in range(num_nodes):
         for j in range(i + 1, num_nodes):
             if random.random() > 0.5:  # 50% chance to create an edge
                 road = Road()
                 road.cost = random.uniform(10.0, 100.0)
-                road.conditions = random.choice(list(Conditions))
                 road.geography = random.choice(list(Geography))
                 road.infrastructure = random.choice(list(Infrastructure))
-                road.availability = random.choices([True, False], weights=[0.7, 0.3])[0]
 
                 graph.add_connection(zones[i], zones[j], road)
 
@@ -59,16 +56,13 @@ def generate_random_graph(num_nodes: int) -> Graph:
             target_zone = random.choice([z for z in zones if z != zone])
             road = Road()
             road.cost = random.uniform(10.0, 100.0)
-            road.conditions = random.choice(list(Conditions))
             road.geography = random.choice(list(Geography))
             road.infrastructure = random.choice(list(Infrastructure))
-            road.availability = random.choices([True, False], weights=[0.7, 0.3])[0]
 
             # Create a connection between the isolated zone and the chosen target zone
             graph.add_connection(zone, target_zone, road)
-    
-    return graph
 
+    return graph
 
 
 def generate_map_graph() -> Graph:
@@ -80,9 +74,24 @@ def generate_map_graph() -> Graph:
     """
     graph = Graph()
 
-    # Load municipalities from JSON file
     load_municipalities_from_json(graph, data_path)
 
     load_roads_from_json(graph, data_path)
 
     return graph
+
+
+def apply_randomness_to_graph(graph):
+    for zone in graph.graph:
+        apply_randomness_to_zone(zone)
+        for _,road in graph.graph[zone]:
+            apply_randomness_to_road(road)
+
+
+def apply_randomness_to_road(road):
+    road.conditions = random.choice(list(Conditions))
+    road.availability = random.choices([True, False], weights=[0.7, 0.3])[0]
+
+
+def apply_randomness_to_zone(zone):
+    random.choice(list(Severity))

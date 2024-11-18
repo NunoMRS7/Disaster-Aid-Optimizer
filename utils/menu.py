@@ -3,10 +3,10 @@ from graph.algorithms.bfs import bfs
 from graph.algorithms.dfs import dfs
 from graph.algorithms.a_star import a_star
 from enums.vehicle_type import VehicleType
-from utils.graph_generator import generate_random_graph
-from utils.graph_generator import generate_map_graph
+from utils.graph_generator import generate_random_graph, apply_randomness_to_graph, generate_map_graph
 from utils.graph_visualizer import print_graph, visualize_graph
 from map.src.plot_portugal_graph import visualize_generated_graph
+
 
 class Menu:
     def __init__(self):
@@ -34,6 +34,7 @@ class Menu:
             if choice == '1':
                 input_nodes = input("Enter the number of nodes for the graph: ")
                 self.graph = generate_random_graph(int(input_nodes))
+                apply_randomness_to_graph(self.graph)
                 print("New graph generated.")
 
             elif choice == '2':
@@ -59,9 +60,9 @@ class Menu:
 
             elif choice in ['5', '6', '7']:
                 if self.graph is not None:
-                    
-                    #start_zone = self.random_graph.get_zone("C")
-                    #goal_zone = self.random_graph.get_zone("A")
+
+                    # start_zone = self.random_graph.get_zone("C")
+                    # goal_zone = self.random_graph.get_zone("A")
 
                     # for testing purposes
                     start_zone = self.graph.get_zone("Braga")
@@ -90,6 +91,7 @@ class Menu:
 
             elif choice == '8':
                 self.graph = generate_map_graph()
+                apply_randomness_to_graph(self.graph)
                 print("New graph generated.")
 
             elif choice == '9':

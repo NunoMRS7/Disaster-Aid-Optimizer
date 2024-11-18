@@ -34,9 +34,12 @@ def load_municipalities_from_json(graph, filename):
                     population = 0  # In case of any unexpected string format
 
             coordinate = Coordinate(latitude, longitude)
-            severity = random.choice(list(Severity))
 
-            zone = Zone(name, coordinate, severity, population)
+            zone = Zone()
+            zone.name = name
+            zone.coordinate = coordinate
+            zone.population = population
+
             graph.add_zone(zone)
         
 def load_roads_from_json(graph, filename):
@@ -52,10 +55,8 @@ def load_roads_from_json(graph, filename):
                     if not graph.has_connection(zone, neighbor):
                         road = Road()
                         road.cost = zone.calculate_distance_between_zones(neighbor)
-                        road.conditions = random.choice(list(Conditions))
                         road.geography = random.choice(list(Geography))
                         road.infrastructure = random.choice(list(Infrastructure))
-                        road.availability = random.choices([True, False], weights=[0.7, 0.3])[0]
 
                         graph.add_connection(zone, neighbor, road)
                 
