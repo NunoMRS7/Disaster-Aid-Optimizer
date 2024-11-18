@@ -1,9 +1,10 @@
 # Makefile for project management
 
 # Variables
-DATA_DIR = data
+DATA_DIR = map/data
 AFTER_DIR = $(DATA_DIR)/after
 BEFORE_DIR = $(DATA_DIR)/before
+MAP_SRC = map/src
 
 # Lists of files and directories to remove
 JSON_FILES = $(wildcard $(BEFORE_DIR)/*.json)
@@ -12,22 +13,13 @@ GEOJSON_DIR = $(BEFORE_DIR)/geojson
 ZIP_FILE = $(BEFORE_DIR)/data.zip
 UNZIPED_DIR = $(BEFORE_DIR)/data/
 
-.PHONY: all clean unzip compile plot
+.PHONY: build all
 
 # Default target
-all: create_after_dir unzip compile
+all: build run
 
-# Compiles the data
-compile:
-	python3 src/run_all.py
-
-# Plots the graph
-plot:
-	python3 src/plot_portugal_graph.py
-	
-# Plots the graph with labels
-plot-labels:
-	python3 src/plot_portugal_graph.py --show-labels
+# Build target
+build: create_after_dir unzip compile
 
 # Creates the directory data/after
 create_after_dir:
@@ -36,6 +28,14 @@ create_after_dir:
 # Unzips the data.zip file into the data directory
 unzip:
 	unzip -o $(ZIP_FILE) -d $(BEFORE_DIR)
+
+# Compiles the data
+compile:
+	python3 $(MAP_SRC)/run_all.py
+
+# Run main
+run:
+	python3 main.py
 
 # Cleans files and directories
 clean:
