@@ -13,10 +13,10 @@ GEOJSON_DIR = $(BEFORE_DIR)/geojson
 ZIP_FILE = $(BEFORE_DIR)/data.zip
 UNZIPED_DIR = $(BEFORE_DIR)/data/
 
-.PHONY: build all
+.PHONY: build build-rin run
 
 # Default target
-all: build run
+build-run: build run
 
 # Build target
 build: create_after_dir unzip compile
