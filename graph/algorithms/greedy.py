@@ -53,6 +53,6 @@ def greedy(graph, start_zone, goal_zone, weight_distance=0.5, weight_zone_heuris
             )
             
             came_from[neighbor] = current_zone
-            heapq.heappush(open_set, (h_score, neighbor))
+            heapq.heappush(open_set, (h_score, neighbor.name))  # Use neighbor.name for comparison
 
     return None, visited, float('inf')

@@ -1,10 +1,10 @@
 # Makefile for project management
 
 # Variables
-DATA_DIR = map/data
+DATA_DIR = data
 AFTER_DIR = $(DATA_DIR)/after
 BEFORE_DIR = $(DATA_DIR)/before
-MAP_SRC = map/src
+MAP_SRC = src
 
 # Lists of files and directories to remove
 JSON_FILES = $(wildcard $(BEFORE_DIR)/*.json)

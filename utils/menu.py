@@ -61,26 +61,26 @@ class Menu:
                     print("Please generate a graph first.")
 
             elif choice in ['5', '6', '7', '8']:
-                if self.random_graph is not None:
+                if self.graph is not None:
                     
-                    # start_zone = self.random_graph.get_zone("C")
-                    # goal_zone = self.random_graph.get_zone("A")
+                    #start_zone = self.graph.get_zone("C")
+                    #goal_zone = self.graph.get_zone("A")
 
                     # for testing purposes
                     start_zone = self.graph.get_zone("Braga")
                     goal_zone = self.graph.get_zone("Porto")
 
                     if choice == '5':
-                        best_path, visited, best_cost = dfs(self.random_graph, start_zone, goal_zone)
+                        best_path, visited, best_cost = dfs(self.graph, start_zone, goal_zone)
                         print("Algorithm: DFS")
                     elif choice == '6':
-                        best_path, visited, best_cost = bfs(self.random_graph, start_zone, goal_zone)
+                        best_path, visited, best_cost = bfs(self.graph, start_zone, goal_zone)
                         print("Algorithm: BFS")
                     elif choice == '7':
-                        best_path, visited, best_cost = a_star(self.random_graph, start_zone, goal_zone)
+                        best_path, visited, best_cost = a_star(self.graph, start_zone, goal_zone)
                         print("Algorithm: A* Search")
                     elif choice == '8':
-                        best_path, visited, best_cost = greedy(self.random_graph, start_zone, goal_zone)
+                        best_path, visited, best_cost = greedy(self.graph, start_zone, goal_zone)
                         print("Algorithm: Greedy Search")
 
                     if best_path is None:
