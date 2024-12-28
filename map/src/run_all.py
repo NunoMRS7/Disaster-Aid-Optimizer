@@ -1,16 +1,16 @@
 import subprocess
 import os
 
-main_dir = "data/before/data"
+main_dir = "map/data/before/data"
 
 # List of scripts to run in order
     
 scripts = [
-    'src/data_manipulation/big_data/parser.py',
-    'src/data_manipulation/big_data/centroide.py',
-    'src/data_manipulation/big_data/fronteirs.py',
-    'src/data_manipulation/big_data/final_json.py',
-    'src/data_manipulation/big_data/final.py'
+    'map/src/data_manipulation/big_data/parser.py',
+    'map/src/data_manipulation/big_data/centroide.py',
+    'map/src/data_manipulation/big_data/fronteirs.py',
+    'map/src/data_manipulation/big_data/final_json.py',
+    'map/src/data_manipulation/big_data/final.py'
 ]
 
 if os.path.exists(main_dir): # Run each script in order
