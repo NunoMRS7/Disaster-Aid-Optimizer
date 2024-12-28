@@ -2,12 +2,12 @@ import json
 import csv
 
 # Carrega o ficheiro final.json
-with open('data/before/final.json', 'r') as json_file:
+with open('map/data/before/final.json', 'r') as json_file:
     municipios_data = json.load(json_file)
 
 # Carrega o ficheiro municipalities_population.csv
 population_data = {}
-with open('data/before/municipalities_population.csv', 'r') as csv_file:
+with open('map/data/before/municipalities_population.csv', 'r') as csv_file:
     reader = csv.reader(csv_file, delimiter=';')
     for row in reader:
         municipio = row[0].strip('"')
@@ -22,7 +22,7 @@ for municipio, dados in municipios_data.items():
         dados['population'] = 'N/A'
 
 # Salva o novo ficheiro finalizado
-with open('data/after/final_output.json', 'w') as output_file:
+with open('map/data/after/final_output.json', 'w') as output_file:
     json.dump(municipios_data, output_file, indent=4, ensure_ascii=False)
 
-print("File 'data/after/final_output.json' successfully created.")
+print("File 'map/data/after/final_output.json' successfully created.")

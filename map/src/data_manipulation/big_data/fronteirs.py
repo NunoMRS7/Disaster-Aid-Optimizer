@@ -3,8 +3,8 @@ import json
 import os
 
 # Define the directory where the geojson files are located
-geojson_dir = 'data/before/geojson/'
-output_file = 'data/before/neighbors.json'
+geojson_dir = 'map/data/before/geojson/'
+output_file = 'map/data/before/neighbors.json'
 
 def get_neighbors(municipality_name, gdf):
     # Get the geometry of the current municipality
