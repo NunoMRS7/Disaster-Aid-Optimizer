@@ -1,11 +1,11 @@
 import json
 
 # Carregar dados de final.geojson
-with open('data/before/final.geojson', 'r', encoding='utf-8') as geojson_file:
+with open('map/data/before/final.geojson', 'r', encoding='utf-8') as geojson_file:
     geojson_data = json.load(geojson_file)
 
 # Carregar dados de neighbors.json
-with open('data/before/neighbors.json', 'r', encoding='utf-8') as neighbors_file:
+with open('map/data/before/neighbors.json', 'r', encoding='utf-8') as neighbors_file:
     neighbors_data = json.load(neighbors_file)
 
 # Criar estrutura para o novo JSON
@@ -23,7 +23,7 @@ for feature in geojson_data['features']:
     }
 
 # Guardar o novo JSON
-with open('data/before/final.json', 'w', encoding='utf-8') as output_file:
+with open('map/data/before/final.json', 'w', encoding='utf-8') as output_file:
     json.dump(municipios_data, output_file, ensure_ascii=False, indent=4)
 
-print("File 'data/before/final.json' successfully created!")
+print("File 'map/data/before/final.json' successfully created!")

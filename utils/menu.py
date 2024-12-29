@@ -70,13 +70,13 @@ class Menu:
 
                     if choice == '5':
                         best_path, visited, best_cost = dfs(self.graph, start_zone, goal_zone)
-                        print("Algortihm: DFS")
+                        print("Algorithm: DFS")
                     elif choice == '6':
                         best_path, visited, best_cost = bfs(self.graph, start_zone, goal_zone)
-                        print("Algortihm: BFS")
+                        print("Algorithm: BFS")
                     elif choice == '7':
                         best_path, visited, best_cost = a_star(self.graph, start_zone, goal_zone)
-                        print("Algortihm: A* Search")
+                        print("Algorithm: A* Search")
 
                     if best_path is None:
                         print("No path found.")

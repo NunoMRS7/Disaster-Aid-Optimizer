@@ -9,7 +9,7 @@ wgs84 = Proj("EPSG:4326")      # WGS 84
 transformer = Transformer.from_proj(etrs_tm06, wgs84)  # Criar o transformador
 
 # Definir os caminhos para os ficheiros GeoJSON
-geojson_files = ['data/before/geojson/collapsed_info-continental.geojson']
+geojson_files = ['map/data/before/geojson/collapsed_info-continental.geojson']
 
 # Lista para armazenar todas as features
 all_features = []
@@ -76,5 +76,5 @@ final_geojson = {
 }
 
 # Guardar o GeoJSON combinado num único ficheiro
-with open('data/before/final.geojson', 'w', encoding='utf-8') as f:
+with open('map/data/before/final.geojson', 'w', encoding='utf-8') as f:
     json.dump(final_geojson, f, ensure_ascii=False, indent=4)

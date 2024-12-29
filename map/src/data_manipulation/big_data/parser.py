@@ -20,7 +20,7 @@ def parse(path, name):
     gdf_final = pd.concat(gdfs)
 
     # Criar destino do ficheiro
-    output_dir = "data/before/geojson"
+    output_dir = "map/data/before/geojson"
     file_name = os.path.join(output_dir, f"collapsed_info-{name}.geojson")
 
     # Criar o diretório caso ele não exista
@@ -30,7 +30,7 @@ def parse(path, name):
     gdf_final.to_file(file_name, driver='GeoJSON')
 
 # Definir o diretório com os shapefiles
-main_dir = "data/before/data/"
+main_dir = "map/data/before/data/"
 print("Parsing", main_dir)
 parse(main_dir, "continental")
 
