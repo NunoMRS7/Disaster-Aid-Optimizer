@@ -57,10 +57,10 @@ def a_star(graph, start_zone, goal_zone, use_simple_heuristic=True, weight_dista
         
         # Expand neighbors
         for neighbor, road in graph.get_connections(current_zone):
-            edge_heuristic_cost = edge_heuristic(road.cost, road.conditions, road.geography, road.infrastructure, road.availability)
             if use_simple_heuristic:
                 tentative_g_score = g_score[current_zone] + road.cost
             else:
+                edge_heuristic_cost = edge_heuristic(road.cost, road.conditions, road.geography, road.infrastructure, road.availability)
                 tentative_g_score = g_score[current_zone] + edge_heuristic_cost
             if tentative_g_score < g_score[neighbor]:
                 came_from[neighbor] = current_zone
