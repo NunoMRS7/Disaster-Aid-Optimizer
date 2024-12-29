@@ -11,7 +11,7 @@ class ZoneWrapper:
     def __lt__(self, other):
         return self.f_score < other.f_score
 
-def a_star(graph, start_zone, goal_zone, use_simple_heuristic=True, weight_distance=0.5, weight_zone_heuristic=0.3, weight_edge=0.2):
+def a_star(graph, start_zone, goal_zone, use_simple_heuristic=True, weight_distance=0.6, weight_zone_heuristic=0.4):
     """
     A* algorithm to find the best path using either a simple or a weighted heuristic approach.
 
@@ -43,7 +43,7 @@ def a_star(graph, start_zone, goal_zone, use_simple_heuristic=True, weight_dista
             apply_randomness_to_graph(graph)
 
         current_wrapper = heapq.heappop(open_set)
-        current_f_score, current_zone = current_wrapper.f_score, current_wrapper.zone
+        _, current_zone = current_wrapper.f_score, current_wrapper.zone
         visited.add(current_zone)
         
         # Goal reached
@@ -57,7 +57,11 @@ def a_star(graph, start_zone, goal_zone, use_simple_heuristic=True, weight_dista
         
         # Expand neighbors
         for neighbor, road in graph.get_connections(current_zone):
-            tentative_g_score = g_score[current_zone] + road.cost
+            edge_heuristic_cost = edge_heuristic(road.cost, road.conditions, road.geography, road.infrastructure, road.availability)
+            if use_simple_heuristic:
+                tentative_g_score = g_score[current_zone] + road.cost
+            else:
+                tentative_g_score = g_score[current_zone] + edge_heuristic_cost
             if tentative_g_score < g_score[neighbor]:
                 came_from[neighbor] = current_zone
                 g_score[neighbor] = tentative_g_score
@@ -66,11 +70,9 @@ def a_star(graph, start_zone, goal_zone, use_simple_heuristic=True, weight_dista
                 if use_simple_heuristic:
                     h_score = neighbor.distanceToGoal
                 else:
-                    edge_heuristic_cost = edge_heuristic(road.cost, road.conditions, road.geography, road.infrastructure, road.availability)
                     h_score = (
                         weight_distance * neighbor.distanceToGoal +
-                        weight_zone_heuristic * neighbor.heuristic +
-                        weight_edge * edge_heuristic_cost
+                        weight_zone_heuristic * neighbor.heuristic
                     )
                 f_score = tentative_g_score + h_score
                 
