@@ -38,7 +38,7 @@ def visualize_graph(graph: Graph):
     # Position nodes randomly for display
     for idx, (zone, connections) in enumerate(graph.graph.items()):
         pos[zone] = (random.uniform(0, 10), random.uniform(0, 10))
-        labels[zone] = f"{zone.name} (S:{zone.severity.value}, P:{zone.population})"
+        labels[zone] = f"{zone.name} (S:{zone.severity}, P:{zone.population})"
 
         for neighbor, road in connections:
             edges.append((zone, neighbor, road))
