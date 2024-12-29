@@ -31,7 +31,7 @@ class Zone:
         severity_weight = 0.7 
         population_weight = 0.3
 
-        scaled_severity = self.severity.value / 6
+        scaled_severity = self.severity / 6
         scaled_population = (self.population - 1000) / (100000 - 1000)
 
         # Calculate the heuristic value

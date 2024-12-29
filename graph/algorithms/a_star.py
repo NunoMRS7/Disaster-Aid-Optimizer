@@ -1,83 +1,103 @@
-import heapq
 from graph.algorithms.heuristic import edge_heuristic
 from utils.graph_generator import apply_randomness_to_graph
-from map.src.plot_portugal_graph import visualize_generated_graph
 
-class ZoneWrapper:
-    def __init__(self, f_score, zone):
-        self.f_score = f_score
-        self.zone = zone
+def a_star(graph, start, end, use_simple_heuristic=True):
+        # open_list is a list of nodes which have been visited, but who's neighbors
+        # haven't all been inspected, starts off with the start node
+        # closed_list is a list of nodes which have been visited
+        # and who's neighbors have been inspected
+        open_list = {start}
+        closed_list = set([])
 
-    def __lt__(self, other):
-        return self.f_score < other.f_score
+        # g contains current distances from start to all other nodes
+        # the default value (if it's not found in the map) is +infinity
+        g = {}
 
-def a_star(graph, start_zone, goal_zone, use_simple_heuristic=True, weight_distance=0.6, weight_zone_heuristic=0.4):
-    """
-    A* algorithm to find the best path using either a simple or a weighted heuristic approach.
+        g[start] = 0
 
-    Args:
-        graph (Graph): The graph containing zones and connections.
-        start_zone (Zone): The starting zone.
-        goal_zone (Zone): The target zone.
-        use_simple_heuristic (bool): If True, use a simple heuristic; otherwise, use a weighted heuristic.
-        weight_distance (float): Weight for the zone's distanceToGoal heuristic (used if use_simple_heuristic is False).
-        weight_zone_heuristic (float): Weight for the zone's internal heuristic (used if use_simple_heuristic is False).
-        weight_edge (float): Weight for the edge heuristic (used if use_simple_heuristic is False).
-
-    Returns:
-        tuple: (best_path, visited_zones, total_cost)
-    """
-    open_set = [ZoneWrapper(0, start_zone)]
-    heapq.heapify(open_set)
-    came_from = {}
-    g_score = {zone: float('inf') for zone in graph.graph}
-    g_score[start_zone] = 0
-
-    best_path = []
-    visited = set()
-
-    iteration_count = 1
-
-    while open_set:
-        if not use_simple_heuristic and iteration_count % 3 == 0:
-            apply_randomness_to_graph(graph)
-
-        current_wrapper = heapq.heappop(open_set)
-        _, current_zone = current_wrapper.f_score, current_wrapper.zone
-        visited.add(current_zone)
+        # parents contains an adjacency map of all nodes
+        parents = {}
+        parents[start] = start
         
-        # Goal reached
-        if current_zone == goal_zone:
-            best_path = []
-            while current_zone in came_from:
-                best_path.insert(0, current_zone)
-                current_zone = came_from[current_zone]
-            best_path.insert(0, start_zone)
-            return best_path, visited, g_score[goal_zone]
-        
-        # Expand neighbors
-        for neighbor, road in graph.get_connections(current_zone):
-            if use_simple_heuristic:
-                tentative_g_score = g_score[current_zone] + road.cost
-            else:
-                edge_heuristic_cost = edge_heuristic(road.cost, road.conditions, road.geography, road.infrastructure, road.availability)
-                tentative_g_score = g_score[current_zone] + edge_heuristic_cost
-            if tentative_g_score < g_score[neighbor]:
-                came_from[neighbor] = current_zone
-                g_score[neighbor] = tentative_g_score
-                
-                # Heuristic calculation
-                if use_simple_heuristic:
-                    h_score = neighbor.distanceToGoal
+        n = None
+        iterations_count = 1
+        while len(open_list) > 0:
+            if not use_simple_heuristic and iterations_count % 3 == 0:
+                apply_randomness_to_graph(graph)
+
+            # find a node with the lowest value of f() - evaluation function
+            calc_heurist = {}
+            flag = False
+            for v in open_list:
+                if n == None:
+                    n = v
                 else:
-                    h_score = (
-                        weight_distance * neighbor.distanceToGoal +
-                        weight_zone_heuristic * neighbor.heuristic
-                    )
-                f_score = tentative_g_score + h_score
-                
-                heapq.heappush(open_set, ZoneWrapper(f_score, neighbor))
-        
-        iteration_count += 1
+                    v.determine_self_heuristic()
+                    flag = True
+                    h = v.calculate_distance_between_zones(end) + (0.0 if use_simple_heuristic else v.heuristic)    
+                    calc_heurist[v] = g[v] + h
+            if flag == True:
+                n = get_min_heuristic(calc_heurist)  
+            if n == None:
+                print('Path does not exist!')
+                return None, None, None
 
-    return None, visited, float('inf')
+            # if the current node is the end
+            # then we begin reconstructing the path from it to the start
+            if n == end:
+                reconst_path = []
+
+                while parents[n] != n:
+                    reconst_path.append(n)
+                    n = parents[n]
+
+                reconst_path.append(start)
+
+                reconst_path.reverse()
+
+                total_path_cost = 0
+                for i in range(len(reconst_path) - 1):
+                    total_path_cost += reconst_path[i].calculate_distance_between_zones(reconst_path[i + 1])
+
+                return (reconst_path, closed_list, total_path_cost)
+
+            # for all neighbors of the current node do
+            for (m, road) in graph.get_connections(n):
+                weight = road.cost if use_simple_heuristic else edge_heuristic(road.cost, road.conditions, road.geography, road.infrastructure, road.availability)
+                # if the current node isn't in both open_list and closed_list
+                # add it to open_list and note n as it's parent
+                if m not in open_list and m not in closed_list:
+                    open_list.add(m)
+                    parents[m] = n
+                    g[m] = g[n] + weight
+
+                # otherwise, check if it's quicker to first visit n, then m
+                # and if it is, update parent data and g data
+                # and if the node was in the closed_list, move it to open_list
+                else:
+                    if g[m] > g[n] + weight:
+                        g[m] = g[n] + weight
+                        parents[m] = n
+
+                        if m in closed_list:
+                            closed_list.remove(m)
+                            open_list.add(m)
+
+            # remove n from the open_list, and add it to closed_list
+            # because all of his neighbors were inspected
+            open_list.remove(n)
+            closed_list.add(n)
+
+            iterations_count += 1
+
+        print('Path does not exist!')
+        return None, None, None
+
+def get_min_heuristic(map):
+    minimum = float('inf')
+    zone = None
+    for key in map:
+        if map[key] < minimum:
+            minimum = map[key]
+            zone = key
+    return zone
