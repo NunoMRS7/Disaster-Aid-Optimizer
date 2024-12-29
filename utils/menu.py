@@ -22,8 +22,9 @@ class Menu:
         print("5. Traverse the graph using DFS")
         print("6. Traverse the graph using BFS")
         print("7. Traverse the graph using A* Search")
-        print("8. Generate the map of Portugal")
-        print("9. Visualize the map of Portugal")
+        print("8. Traverse the graph using Weighted A* Search on a dynamic map")
+        print("9. Generate the map of Portugal")
+        print("10. Visualize the map of Portugal")
         print("0. Exit")
 
     def run(self):
@@ -58,7 +59,7 @@ class Menu:
                 else:
                     print("Please generate a graph first.")
 
-            elif choice in ['5', '6', '7']:
+            elif choice in ['5', '6', '7', '8']:
                 if self.graph is not None:
 
                     # start_zone = self.random_graph.get_zone("C")
@@ -75,8 +76,11 @@ class Menu:
                         best_path, visited, best_cost = bfs(self.graph, start_zone, goal_zone)
                         print("Algorithm: BFS")
                     elif choice == '7':
-                        best_path, visited, best_cost = a_star(self.graph, start_zone, goal_zone)
+                        best_path, visited, best_cost = a_star(self.graph, start_zone, goal_zone, True)
                         print("Algorithm: A* Search")
+                    elif choice == '8':
+                        best_path, visited, best_cost = a_star(self.graph, start_zone, goal_zone, False)
+                        print("Algorithm: A* Search (Weighted)")
 
                     if best_path is None:
                         print("No path found.")
@@ -89,12 +93,12 @@ class Menu:
                 else:
                     print("Please generate a graph first.")
 
-            elif choice == '8':
+            elif choice == '9':
                 self.graph = generate_map_graph()
                 apply_randomness_to_graph(self.graph)
                 print("New graph generated.")
 
-            elif choice == '9':
+            elif choice == '10':
                 if self.graph is not None:
                     # ask which labels to show
                     show_labels = input("Show labels (y/n)? ").lower() == 'y'
