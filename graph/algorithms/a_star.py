@@ -11,10 +11,6 @@ class ZoneWrapper:
     def __lt__(self, other):
         return self.f_score < other.f_score
 
-def simple_heuristic(zone, goal_zone):
-    # Simple heuristic: straight-line distance (or any other simple heuristic)
-    return zone.distanceToGoal
-
 def a_star(graph, start_zone, goal_zone, use_simple_heuristic=True, weight_distance=0.5, weight_zone_heuristic=0.3, weight_edge=0.2):
     """
     A* algorithm to find the best path using either a simple or a weighted heuristic approach.
