@@ -1,7 +1,7 @@
 from graph.algorithms.heuristic import edge_heuristic
 from utils.graph_generator import apply_randomness_to_graph
 
-def a_star(graph, start, end, use_simple_heuristic=True):
+def a_star(graph, start, end, use_simple_heuristic=True, vehicle=None):
         # open_list is a list of nodes which have been visited, but who's neighbors
         # haven't all been inspected, starts off with the start node
         # closed_list is a list of nodes which have been visited
@@ -63,7 +63,7 @@ def a_star(graph, start, end, use_simple_heuristic=True):
 
             # for all neighbors of the current node do
             for (m, road) in graph.get_connections(n):
-                weight = road.cost if use_simple_heuristic else edge_heuristic(road.cost, road.conditions, road.geography, road.infrastructure, road.availability)
+                weight = road.cost if use_simple_heuristic else edge_heuristic(road.cost, road.conditions, road.geography, road.infrastructure, road.availability, vehicle.type)
                 # if the current node isn't in both open_list and closed_list
                 # add it to open_list and note n as it's parent
                 if m not in open_list and m not in closed_list:

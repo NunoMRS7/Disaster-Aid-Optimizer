@@ -10,7 +10,7 @@ from map.src.plot_portugal_graph import visualize_generated_graph
 
 class Menu:
     def __init__(self):
-        self.drone = Vehicle(VehicleType.DRONE, autonomy=500.0, capacity=10.0)
+        self.vehicle = Vehicle(VehicleType.DRONE, autonomy=500.0, capacity=10.0)
         self.graph = None
         self.is_portugal_map = False
 
@@ -26,7 +26,7 @@ class Menu:
         print("\nGraph Menu:")
         print("1. Print the current graph")
         print("2. Visualize the current graph")
-        print("3. Calculate drone autonomy")
+        print("3. Calculate vehicle autonomy")
         print("4. Traverse the graph using DFS")
         print("5. Traverse the graph using BFS")
         print("6. Traverse the graph using A* Search")
@@ -84,8 +84,8 @@ class Menu:
                     print("Please generate a graph first.")
             elif choice == '3':
                 if self.graph is not None:
-                    print("Drone autonomy before carrying 5kg:", self.drone.autonomy)
-                    print("Drone autonomy after carrying 5kg:", self.drone.calculate_autonomy_loss(5.0))
+                    print("Vehicle autonomy before carrying 5kg:", self.vehicle.autonomy)
+                    print("Vehicle autonomy after carrying 5kg:", self.vehicle.calculate_autonomy_loss(5.0))
                 else:
                     print("Please generate a graph first.")
             elif choice in ['4', '5', '6', '7']:
@@ -112,7 +112,18 @@ class Menu:
                         best_path, visited, best_cost = a_star(self.graph, start_zone, goal_zone, True)
                         print("Algorithm: A* Search")
                     elif choice == '7':
-                        best_path, visited, best_cost = a_star(self.graph, start_zone, goal_zone, False)
+                        vehicle_type = input("Enter the vehicle type (drone, car, truck): ").lower()
+                        if vehicle_type == 'drone':
+                            self.vehicle.type = VehicleType.DRONE
+                        elif vehicle_type == 'car':
+                            self.vehicle.type = VehicleType.CAR
+                        elif vehicle_type == 'truck':
+                            self.vehicle.type = VehicleType.TRUCK
+                        else:
+                            print("Invalid vehicle type.")
+                            continue
+
+                        best_path, visited, best_cost = a_star(self.graph, start_zone, goal_zone, False, self.vehicle)
                         print("Algorithm: A* Search (Weighted)")
 
                     if best_path is None:
