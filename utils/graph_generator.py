@@ -56,8 +56,8 @@ def generate_random_graph(num_nodes: int) -> Graph:
             target_zone = random.choice([z for z in zones if z != zone])
             road = Road()
             road.cost = random.uniform(10.0, 100.0)
-            road.geography = random.choice(list(Geography))
-            road.infrastructure = random.choice(list(Infrastructure))
+            road.geography = random.choices(list(Geography), weights=[0.2, 0.8])[0]
+            road.infrastructure = random.choices(list(Infrastructure), weights=[0.2, 0.8])[0]
 
             # Create a connection between the isolated zone and the chosen target zone
             graph.add_connection(zone, target_zone, road)
