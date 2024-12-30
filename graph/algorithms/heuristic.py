@@ -1,8 +1,9 @@
 from enums.conditions import Conditions
 from enums.infrastructure import Infrastructure
 from enums.geography import Geography
+from enums.vehicle_type import VehicleType
 
-def edge_heuristic(cost, conditions, infrastructure, geography, availability):
+def edge_heuristic(cost, conditions, infrastructure, geography, availability, vehicle_type):
     """
     Computes a heuristic score between two zones based on edge properties.
 
@@ -12,12 +13,21 @@ def edge_heuristic(cost, conditions, infrastructure, geography, availability):
         infrastructure (Infrastructure): Infrastructure type of the edge.
         geography (Geography): Geography type of the edge.
         availability (bool): Availability of the edge.
-
+        vehicle_type (VehicleType): Type of the vehicle
+        
     Returns:
         float: Heuristic score between the two zones, or float('inf') if unavailable.
     """
-    # If the connection is not available, return infinity to avoid this edge
-    if not availability:
+    # If the connection is not available, return infinity to avoid this edge. Drones can traverse unavailable edges.
+    if not availability and vehicle_type != VehicleType.DRONE:
+        return float('inf')
+    
+    # Drones cannot traverse highways
+    if vehicle_type == VehicleType.DRONE and (infrastructure == Infrastructure.HIGHWAY or conditions == Conditions.VERY_BAD or conditions == Conditions.BAD):
+        return float('inf')
+    
+    # Trucks cannot traverse mountainous terrain
+    if vehicle_type == VehicleType.TRUCK and geography == Geography.MOUNTAINOUS:
         return float('inf')
 
     # Normalize and weigh edge components based on Conditions
