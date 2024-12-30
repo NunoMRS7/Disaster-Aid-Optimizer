@@ -17,10 +17,10 @@ class Coordinate:
         """
         # Haversine formula to calculate distance between two points on Earth
         R = 6371
-        lat1 = self.latitude
-        lon1 = self.longitude
-        lat2 = other.latitude
-        lon2 = other.longitude
+        lat1 = math.radians(self.latitude)
+        lon1 = math.radians(self.longitude)
+        lat2 = math.radians(other.latitude)
+        lon2 = math.radians(other.longitude)
 
         dlat = lat2 - lat1
         dlon = lon2 - lon1

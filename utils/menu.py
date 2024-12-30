@@ -10,7 +10,7 @@ from map.src.plot_portugal_graph import visualize_generated_graph
 
 class Menu:
     def __init__(self):
-        self.vehicle = Vehicle(VehicleType.DRONE, autonomy=500.0, capacity=10.0)
+        self.vehicle = Vehicle(VehicleType.DRONE, autonomy=500, capacity=200)
         self.graph = None
         self.is_portugal_map = False
 
@@ -114,11 +114,11 @@ class Menu:
                     elif choice == '7':
                         vehicle_type = input("Enter the vehicle type (drone, car, truck): ").lower()
                         if vehicle_type == 'drone':
-                            self.vehicle.type = VehicleType.DRONE
+                            self.vehicle = Vehicle(VehicleType.DRONE, autonomy=40, capacity=20)
                         elif vehicle_type == 'car':
-                            self.vehicle.type = VehicleType.CAR
+                            self.vehicle = Vehicle(VehicleType.CAR, autonomy=500, capacity=200)
                         elif vehicle_type == 'truck':
-                            self.vehicle.type = VehicleType.TRUCK
+                            self.vehicle = Vehicle(VehicleType.TRUCK, autonomy=800, capacity=800)
                         else:
                             print("Invalid vehicle type.")
                             continue

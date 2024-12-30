@@ -14,17 +14,13 @@ class Vehicle:
         self.type = vehicle_type
         self.autonomy = autonomy
         self.capacity = capacity
+        self.load = capacity
 
-    def calculate_autonomy_loss(self, load: float) -> float:
+    def calculate_autonomy_loss(self, distance):
         """
-        Calculate the autonomy reduction based on the load carried.
+        Calculate the autonomy reduction based on the load carried and distance traveled.
         
         Args:
-            load (float): Load in kilograms.
-        
-        Returns:
-            float: Adjusted autonomy in kilometers.
+            distance (float): The distance traveled in kilometers
         """
-        result = self.autonomy - (load / self.capacity * self.autonomy)
-        self.autonomy = result
-        return result
+        return (distance * (1 + (self.load / self.capacity) * 0.5))

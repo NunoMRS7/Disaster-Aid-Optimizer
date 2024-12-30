@@ -11,7 +11,7 @@ def print_graph(graph: Graph):
         graph (Graph): The graph to print.
     """
     for zone, connections in graph.graph.items():
-        print(f"Zone {zone.name} (Severity: {zone.severity}, Population: {zone.population}):")
+        print(f"Zone {zone.name} (Severity: {zone.severity}, Population: {zone.population}):, Supplies: {zone.supplies}")
         for neighbor, road in connections:
             print(
                 f"  -> Connected to {neighbor.name}:\n"

@@ -57,7 +57,29 @@ def a_star(graph, start, end, use_simple_heuristic=True, vehicle=None):
 
                 total_path_cost = 0
                 for i in range(len(reconst_path) - 1):
-                    total_path_cost += reconst_path[i].calculate_distance_between_zones(reconst_path[i + 1])
+                    distance = reconst_path[i].calculate_distance_between_zones(reconst_path[i + 1])
+                    total_path_cost += distance
+                    if not use_simple_heuristic and vehicle:
+                        autonomy_loss = vehicle.calculate_autonomy_loss(distance)
+                        print(f'Vehicle autonomy: {vehicle.autonomy}')
+                        if vehicle.autonomy - autonomy_loss < 0:
+                            reconst_path[i].supplies += vehicle.load
+                            vehicle.load = 0
+                            print('Vehicle ran out of autonomy!')
+                            return reconst_path[:i+1], closed_list, total_path_cost
+                        
+                        vehicle.autonomy -= autonomy_loss
+                        
+                        supplies_to_leave = reconst_path[i].calculate_supplies_to_leave()
+                        print(f'Vehicle load: {vehicle.load}, supplies to leave: {supplies_to_leave}')
+                        if vehicle.load - supplies_to_leave < 0:
+                            reconst_path[i].supplies += vehicle.load
+                            vehicle.load = 0
+                            print('Vehicle ran out of supplies!')
+                            return reconst_path[:i+1], closed_list, total_path_cost
+                        
+                        reconst_path[i].supplies += supplies_to_leave
+                        vehicle.load -= supplies_to_leave
 
                 return (reconst_path, closed_list, total_path_cost)
 
