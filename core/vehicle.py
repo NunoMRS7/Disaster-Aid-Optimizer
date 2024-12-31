@@ -8,6 +8,7 @@ class Vehicle:
         type (VehicleType): The type of the vehicle, such as drone, car, or truck.
         autonomy (float): The autonomy of the vehicle in kilometers.
         capacity (float): The load capacity of the vehicle in kilograms.
+        load (float): The current load of the vehicle in kilograms.
     """
 
     def __init__(self, vehicle_type: VehicleType, autonomy: float, capacity: float):
