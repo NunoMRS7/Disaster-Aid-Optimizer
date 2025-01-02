@@ -43,7 +43,7 @@ def generate_random_graph(num_nodes: int) -> Graph:
         for j in range(i + 1, num_nodes):
             if random.random() > 0.5:  # 50% chance to create an edge
                 road = Road()
-                road.cost = random.uniform(10.0, 100.0)
+                road.cost = zones[i].calculate_distance_between_zones(zones[j])
                 road.geography = random.choice(list(Geography))
                 road.infrastructure = random.choice(list(Infrastructure))
 

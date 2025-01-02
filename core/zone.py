@@ -23,7 +23,7 @@ class Zone:
         self.population = population
         self.distanceToGoal = -1
         self.heuristic = -1
-        self.supplies = 0  # New attribute for supplies
+        self.supplies = 0
 
     def determine_self_heuristic(self):
         """
