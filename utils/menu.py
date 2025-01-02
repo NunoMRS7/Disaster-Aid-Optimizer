@@ -2,6 +2,7 @@ from core.vehicle import Vehicle
 from graph.algorithms.bfs import bfs
 from graph.algorithms.dfs import dfs
 from graph.algorithms.a_star import a_star
+from graph.algorithms.greedy import greedy
 from enums.vehicle_type import VehicleType
 from utils.graph_generator import generate_random_graph, apply_randomness_to_graph, generate_map_graph
 from utils.graph_visualizer import print_graph, visualize_graph
@@ -30,7 +31,8 @@ class Menu:
         print("4. Traverse the graph using DFS")
         print("5. Traverse the graph using BFS")
         print("6. Traverse the graph using A* Search")
-        print("7. Traverse the graph using Weighted A* Search on a dynamic map")
+        print("7. Traverse the graph using Greedy Search")
+        print("8. Traverse the graph using Weighted A* Search on a dynamic map")
         print("0. Back to Main Menu")
 
     def run(self):
@@ -88,7 +90,7 @@ class Menu:
                     print("Vehicle autonomy after carrying 5kg:", self.vehicle.calculate_autonomy_loss(5.0))
                 else:
                     print("Please generate a graph first.")
-            elif choice in ['4', '5', '6', '7']:
+            elif choice in ['4', '5', '6', '7', '8']:
                 if self.graph is not None:
                     start_zone_name = input("Enter the start zone: ")
                     start_zone = self.graph.get_zone(start_zone_name)
@@ -112,6 +114,9 @@ class Menu:
                         best_path, visited, best_cost = a_star(self.graph, start_zone, goal_zone, True)
                         print("Algorithm: A* Search")
                     elif choice == '7':
+                        best_path, visited, best_cost = greedy(self.graph, start_zone, goal_zone)
+                        print("Algorithm: Greedy Search")
+                    elif choice == '8':
                         vehicle_type = input("Enter the vehicle type (drone, car, truck): ").lower()
                         if vehicle_type == 'drone':
                             self.vehicle = Vehicle(VehicleType.DRONE, autonomy=40, capacity=20)
