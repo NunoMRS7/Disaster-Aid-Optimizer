@@ -1,58 +1,78 @@
-import heapq
-from graph.algorithms.heuristic import edge_heuristic
-
-def greedy(graph, start_zone, goal_zone, use_simple_heuristic=True, vehicle=None):
+def greedy(graph, start_zone, goal_zone):
     """
-    Greedy algorithm to find a path using a heuristic-driven approach.
+    Greedy algorithm to find a path using straight-line distance heuristic.
 
     Args:
         graph (Graph): The graph containing zones and connections.
         start_zone (Zone): The starting zone.
         goal_zone (Zone): The target zone.
-        use_simple_heuristic (bool): Whether to use the simple heuristic.
-        vehicle (Vehicle): The vehicle being used for traversal.
 
     Returns:
         tuple: (best_path, visited_zones, total_cost)
     """
-    open_set = []
-    heapq.heappush(open_set, (0, id(start_zone), start_zone))  # Add id to avoid direct Zone comparison
-    came_from = {}
+    open_list = set([start_zone])
+    closed_list = set([])
+
+    # Parents dictionary to keep track of the path
+    parents = {}
+    parents[start_zone] = start_zone
+
+    # Track visited zones
     visited = set()
 
-    # Track costs
-    cost_so_far = {zone: float('inf') for zone in graph.graph}
-    cost_so_far[start_zone] = 0
+    while len(open_list) > 0:
+        n = None
 
-    while open_set:
-        current_h_score, _, current_zone = heapq.heappop(open_set)
-        visited.add(current_zone)
+        # Find the node with the lowest heuristic value
+        for v in open_list:
+            if n is None or v.distanceToGoal < n.distanceToGoal:
+                n = v
 
-        # Goal reached
-        if current_zone == goal_zone:
-            best_path = []
-            while current_zone in came_from:
-                best_path.insert(0, current_zone)
-                current_zone = came_from[current_zone]
-            best_path.insert(0, start_zone)
-            return best_path, visited, cost_so_far[goal_zone]
-        
-        # Expand neighbors
-        for neighbor, road in graph.get_connections(current_zone):
-            if neighbor not in visited:
-                # Heuristic calculation
-                if use_simple_heuristic:
-                    h_score = neighbor.distanceToGoal
-                else:
-                    h_score = neighbor.heuristic
+        if n is None:
+            print('Path does not exist!')
+            return None, visited, float('inf')
 
-                # Update cost if this path is better
-                edge_cost = edge_heuristic(road.cost, road.conditions, road.geography, road.infrastructure, road.availability, vehicle.type if vehicle else None)
-                total_cost = cost_so_far[current_zone] + edge_cost
+        # If the current node is the goal, reconstruct the path
+        if n == goal_zone:
+            reconst_path = []
 
-                if total_cost < cost_so_far[neighbor]:
-                    cost_so_far[neighbor] = total_cost
-                    heapq.heappush(open_set, (h_score, id(neighbor), neighbor))
-                    came_from[neighbor] = current_zone
+            while parents[n] != n:
+                reconst_path.append(n)
+                n = parents[n]
 
+            reconst_path.append(start_zone)
+            reconst_path.reverse()
+
+            return reconst_path, visited, calculate_cost(reconst_path)
+
+        # For all neighbors of the current node
+        for (m, road) in graph.get_connections(n):
+            # If the current node is not in both open_list and closed_list
+            # add it to open_list and note n as its parent
+            if m not in open_list and m not in closed_list:
+                open_list.add(m)
+                parents[m] = n
+
+        # Remove n from open_list and add it to closed_list
+        # because all of its neighbors were inspected
+        open_list.remove(n)
+        closed_list.add(n)
+        visited.add(n)
+
+    print('Path does not exist!')
     return None, visited, float('inf')
+
+def calculate_cost(path):
+    """
+    Calculate the total cost of the path.
+
+    Args:
+        path (list): The path to calculate the cost for.
+
+    Returns:
+        float: The total cost of the path.
+    """
+    total_cost = 0
+    for i in range(len(path) - 1):
+        total_cost += path[i].calculate_distance_between_zones(path[i + 1])
+    return total_cost
