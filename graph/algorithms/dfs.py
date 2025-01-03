@@ -42,7 +42,7 @@ def dfs_recursive(graph, start_zone, goal_zone, path, visited):
                 return best_path, zone_visited, current_cost
     
     path.pop()
-    return None, visited, 0
+    return None, None, None
 
 def calculate_cost(path):
     """

@@ -39,7 +39,6 @@ def a_star(graph, start, end, use_simple_heuristic=True, vehicle=None):
             if flag == True:
                 n = get_min_heuristic(calc_heurist)  
             if n == None:
-                print('Path does not exist!')
                 return None, None, None
 
             # if the current node is the end
@@ -112,7 +111,6 @@ def a_star(graph, start, end, use_simple_heuristic=True, vehicle=None):
 
             iterations_count += 1
 
-        print('Path does not exist!')
         return None, None, None
 
 def get_min_heuristic(map):

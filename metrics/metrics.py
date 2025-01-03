@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 from core.vehicle import Vehicle
 from enums.vehicle_type import VehicleType
+from graph.algorithms.greedy import greedy
 from graph.algorithms.a_star import a_star
 from graph.algorithms.bfs import bfs
 from graph.algorithms.dfs import dfs
@@ -91,11 +92,12 @@ def bulk_benchmarking():
         "DFS": dfs,
         "BFS": bfs,
         "A* Search": a_star,
+        "Greedy": greedy,
         "Dynamic A* Search": a_star,
     }
 
     results = {}
-    autonomyCapacity = 90000
+    autonomyCapacity = 800
 
     for size in graph_sizes:
         print(f"Generating graph with {size} nodes...")
@@ -110,9 +112,8 @@ def bulk_benchmarking():
         initial_zone = random.choice(zones)
         goal_zone = random.choice([z for z in zones if z != initial_zone])
 
-
         vehicle = Vehicle(VehicleType.TRUCK, autonomyCapacity, autonomyCapacity)
-        autonomyCapacity = autonomyCapacity + 2000
+        autonomyCapacity = autonomyCapacity + 200
 
         print(f"Benchmarking algorithms on graph with {size} nodes...")
         results[size] = {}

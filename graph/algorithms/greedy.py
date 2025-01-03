@@ -29,8 +29,7 @@ def greedy(graph, start_zone, goal_zone):
                 n = v
 
         if n is None:
-            print('Path does not exist!')
-            return None, visited, float('inf')
+            return None, None, None
 
         # If the current node is the goal, reconstruct the path
         if n == goal_zone:
@@ -59,8 +58,7 @@ def greedy(graph, start_zone, goal_zone):
         closed_list.add(n)
         visited.add(n)
 
-    print('Path does not exist!')
-    return None, visited, float('inf')
+    return None, None, None
 
 def calculate_cost(path):
     """
