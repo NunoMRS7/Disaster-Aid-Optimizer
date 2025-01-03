@@ -102,11 +102,14 @@ This project focuses on the **optimization of disaster resources' distribution**
   ```
 
 ### Execution
-1. **Compile the program**
+1. **Ensure the dataset is present**
+A `data.zip` file **must** be placed inside the **map/data/before** directory, containing relevant information regarding the Portuguese graph structure. A link to transfer the `data.zip` file is located [here](https://www.swisstransfer.com/d/956ed240-5a6c-42a1-a44f-5937c02ac678) — expires on 2/2/2025. If you wish to use the project and download the `data.zip` file after expiry, contact [Eduardo Faria](https://www.github.com/2101dudu).
+
+2. **Compile the program**
    ```bash
    make build
    ```
-2. **Run the program**
+3. **Run the program**
    ```bash
    make run
    ```
