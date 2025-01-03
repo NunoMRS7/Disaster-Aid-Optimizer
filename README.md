@@ -124,7 +124,7 @@ A `data.zip` file **must** be placed inside the **map/data/before** directory, c
 - **Metrics**
   - Demonstrates the trade-offs between uninformed and informed search strategies.
 
-## Group Members
+## Group Members - Group 1
 - [Eduardo Faria](https://www.github.com/2101dudu)
 - [Hélder Gomes](https://www.github.com/helderrrg)
 - [Nuno Silva](https://www.github.com/NunoMRS7)
