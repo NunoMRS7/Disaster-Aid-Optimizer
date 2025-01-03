@@ -20,31 +20,12 @@ To run this project, make sure you have Python 3.x installed. You will also need
 - `requests`
 - `geopandas`
 
-### Steps
-```bash
-git clone git@github.com:2101dudu/PortugueseGraph.git
-cd PortugalGraph
-```
-
 You can install the required packages using pip:
 
 ```bash
 pip install networkx matplotlib numpy requests geopandas
 ```
 
-## Usage
-1. Unzip, compile and run the project:
-```bash
-make 
-make [plot/plot_labels]
-```
-2. Or do it step by step:
-```bash
-make create_after_dir
-make unzip
-make compile
-make [plot/plot_labels]
-```
-
 ## Data Sources
 - CAOP, provided by @pedrofp4444
+- Municipalities' population fetched from [wikipedia](https://pt.wikipedia.org/wiki/Lista_de_munic%C3%ADpios_de_Portugal)
