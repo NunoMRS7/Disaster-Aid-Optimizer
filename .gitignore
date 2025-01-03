@@ -16,3 +16,5 @@ data/
 # Ignore macOS system files
 *.DS_Store
 
+#Ignore virtualenv
+myenv/
