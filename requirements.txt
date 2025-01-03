@@ -1,0 +1,7 @@
+geopandas==1.0.1
+matplotlib==3.10.0
+networkx==3.4.2
+numpy==2.2.1
+pandas==2.2.3
+pyproj==3.7.0
+Shapely==2.0.6
