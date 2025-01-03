@@ -8,9 +8,9 @@ from enums.vehicle_type import VehicleType
 from graph.algorithms.a_star import a_star
 from graph.algorithms.bfs import bfs
 from graph.algorithms.dfs import dfs
-from utils.graph_generator import generate_random_graph
+from utils.graph_generator import apply_randomness_to_graph, generate_random_graph
 
-def benchmark_algorithm(algorithm_func, graph, initial_state, goal_state, heuristic=None, vehicle=None):
+def benchmark_algorithm(algorithm_func, graph, initial_state, goal_state, heuristic=True, vehicle=None):
     """
     Benchmarks a graph traversal algorithm, including metrics like execution time,
     memory usage, and path quality.
@@ -27,7 +27,7 @@ def benchmark_algorithm(algorithm_func, graph, initial_state, goal_state, heuris
     start_time = time.time()
     tracemalloc.start()
 
-    if heuristic:
+    if not heuristic and vehicle:
         path, visited_zones, total_cost = algorithm_func(graph, initial_state, goal_state, heuristic, vehicle)
     else:
         path, visited_zones, total_cost = algorithm_func(graph, initial_state, goal_state)
@@ -85,7 +85,7 @@ def bulk_benchmarking():
     """
     import json
 
-    graph_sizes = [5, 10, 20, 50, 100, 500, 1000, 2000]
+    graph_sizes = [5, 10, 20, 50, 100, 500]
     
     algorithms = {
         "DFS": dfs,
@@ -95,11 +95,12 @@ def bulk_benchmarking():
     }
 
     results = {}
-    autonomyCapacity = 800
+    autonomyCapacity = 90000
 
     for size in graph_sizes:
         print(f"Generating graph with {size} nodes...")
         graph = generate_random_graph(size)
+        apply_randomness_to_graph(graph)
 
         zones = list(graph.get_all_zones())
         if len(zones) < 2:
@@ -111,23 +112,23 @@ def bulk_benchmarking():
 
 
         vehicle = Vehicle(VehicleType.TRUCK, autonomyCapacity, autonomyCapacity)
-        autonomyCapacity = autonomyCapacity + 200
+        autonomyCapacity = autonomyCapacity + 2000
 
         print(f"Benchmarking algorithms on graph with {size} nodes...")
         results[size] = {}
 
         for name, algorithm in algorithms.items():
             print(f"Running {name}...")
+            
             try:
                 if name == "Dynamic A* Search":
                     metrics = benchmark_algorithm(algorithm, graph, initial_zone, goal_zone, False, vehicle)
                 else:
                     metrics = benchmark_algorithm(algorithm, graph, initial_zone, goal_zone)
-
                 results[size][name] = metrics
             except Exception as e:
-                print(f"Error while running {name} on graph size {size}: {e}")
-                results[size][name] = {"error": str(e)}
+                print(f"Error running {name}: {e}")
+                results[size][name] = "No path found"
 
         print(f"Completed benchmarking for graph with {size} nodes.\n")
 

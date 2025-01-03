@@ -1,6 +1,6 @@
 def dfs(graph, start_zone, goal_zone):
     """
-    Depth-First Search algorithm to find the best path in terms of minimum cost (iterative version).
+    Depth-First Search algorithm to find the best path in terms of minimum cost.
 
     Args:
         graph (Graph): The graph containing zones and connections.
@@ -10,30 +10,51 @@ def dfs(graph, start_zone, goal_zone):
     Returns:
         tuple: (best_path, visited_zones, total_cost)
     """
-    stack = [(start_zone, [start_zone], 0)]  # Stack holds tuples of (current_zone, path, current_cost)
-    visited_zones = set()
-    best_path = None
-    min_cost = float('inf')
+    path = []
+    visited = set()
+    return dfs_recursive(graph, start_zone, goal_zone, path, visited)
+
+def dfs_recursive(graph, start_zone, goal_zone, path, visited):
+    """
+    Recursive helper function for the Depth-First Search algorithm.
+
+    Args:
+        graph (Graph): The graph containing zones and connections.
+        start_zone (Zone): The starting zone.
+        goal_zone (Zone): The target zone.
+        path (list): The current path.
+        visited (set): The set of visited zones.
     
-    while stack:
-        current_zone, path, current_cost = stack.pop()
-        
-        if current_zone in visited_zones:
-            continue
-        
-        visited_zones.add(current_zone)
-        
-        # If the goal zone is reached, check if this path is the minimum cost path
-        if current_zone == goal_zone:
-            if current_cost < min_cost:
-                best_path = path
-                min_cost = current_cost
-            continue
+    Returns:
+        tuple: (best_path, visited_zones, total_cost)
+    """
+    path.append(start_zone)
+    visited.add(start_zone)
 
-        # Explore neighbors of the current zone
-        for neighbor, road in graph.get_connections(current_zone):
-            if neighbor not in visited_zones and road.availability:
-                total_cost = current_cost + road.cost
-                stack.append((neighbor, path + [neighbor], total_cost))
+    if start_zone == goal_zone:
+        cost = calculate_cost(path)
+        return path, visited, cost
+    
+    for neighbor, road in graph.get_connections(start_zone):
+        if neighbor not in visited:
+            best_path, zone_visited, current_cost = dfs_recursive(graph, neighbor, goal_zone, path, visited)
+            if best_path is not None:
+                return best_path, zone_visited, current_cost
+    
+    path.pop()
+    return None, visited, 0
 
-    return best_path, visited_zones, min_cost
+def calculate_cost(path):
+    """
+    Calculate the total cost of the path.
+
+    Args:
+        path (list): The path to calculate the cost for.
+
+    Returns:
+        float: The total cost of the path.
+    """
+    total_cost = 0
+    for i in range(len(path) - 1):
+        total_cost += path[i].calculate_distance_between_zones(path[i + 1])
+    return total_cost

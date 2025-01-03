@@ -41,11 +41,11 @@ def generate_random_graph(num_nodes: int) -> Graph:
     # Connect zones with random edge properties
     for i in range(num_nodes):
         for j in range(i + 1, num_nodes):
-            if random.random() > 0.5:  # 50% chance to create an edge
+            if random.choices([True, False], weights=[0.1, 0.9])[0]: 
                 road = Road()
                 road.cost = zones[i].calculate_distance_between_zones(zones[j])
-                road.geography = random.choice(list(Geography))
-                road.infrastructure = random.choice(list(Infrastructure))
+                road.geography = random.choices(list(Geography), weights=[0.2, 0.8])[0]
+                road.infrastructure = random.choices(list(Infrastructure), weights=[0.2, 0.8])[0]
 
                 graph.add_connection(zones[i], zones[j], road)
 
@@ -55,7 +55,7 @@ def generate_random_graph(num_nodes: int) -> Graph:
             # Choose another random zone to connect with
             target_zone = random.choice([z for z in zones if z != zone])
             road = Road()
-            road.cost = random.uniform(10.0, 100.0)
+            road.cost = zones[i].calculate_distance_between_zones(zones[j])
             road.geography = random.choices(list(Geography), weights=[0.2, 0.8])[0]
             road.infrastructure = random.choices(list(Infrastructure), weights=[0.2, 0.8])[0]
 
