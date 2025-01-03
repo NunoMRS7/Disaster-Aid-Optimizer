@@ -20,12 +20,6 @@ To run this project, make sure you have Python 3.x installed. You will also need
 - `requests`
 - `geopandas`
 
-You can install the required packages using pip:
-
-```bash
-pip install networkx matplotlib numpy requests geopandas
-```
-
 ## Data Sources
 - CAOP, provided by @pedrofp4444
 - Municipalities' population fetched from [wikipedia](https://pt.wikipedia.org/wiki/Lista_de_munic%C3%ADpios_de_Portugal)

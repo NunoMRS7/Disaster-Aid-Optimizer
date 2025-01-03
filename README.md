@@ -98,7 +98,7 @@ This project focuses on the **optimization of disaster resources' distribution**
 - Python 3.8 or later
 - Required Python libraries:
   ```bash
-  pip3 install networkx matplotlib numpy requests geopandas
+  pip3 install -r requirements.txt
   ```
 
 ### Execution
