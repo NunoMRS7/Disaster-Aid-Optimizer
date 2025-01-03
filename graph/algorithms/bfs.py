@@ -1,4 +1,4 @@
-from collections import deque
+from queue import Queue
 
 def bfs(graph, start_zone, goal_zone):
     """
@@ -12,22 +12,51 @@ def bfs(graph, start_zone, goal_zone):
     Returns:
         tuple: (path, visited_zones, total_cost)
     """
-    queue = deque([(start_zone, [start_zone], 0, 0)])
     visited = set()
-    total_cost = 0
-    visited_zones = set()
+    queue = Queue()
+    cost = 0
 
-    while queue:
-        current_zone, path, depth, cost = queue.popleft()
-        visited.add(current_zone)
-        visited_zones.add(current_zone)
+    queue.put(start_zone)
+    visited.add(start_zone)
 
+    parent = dict()
+    parent[start_zone] = None
+
+    path_found = False
+    while not queue.empty() and path_found == False:
+        current_zone = queue.get()
         if current_zone == goal_zone:
-            return path, visited_zones, cost
+            path_found = True
+        else:
+            for neighbor, road in graph.get_connections(current_zone):
+                if neighbor not in visited:
+                    queue.put(neighbor)
+                    parent[neighbor] = current_zone 
+                    visited.add(neighbor)
 
-        for neighbor, road in graph.get_connections(current_zone):
-            if neighbor not in visited and road.availability:
-                new_cost = cost + road.cost
-                queue.append((neighbor, path + [neighbor], depth + 1, new_cost))
+    path = []
+    if path_found:
+        path.append(goal_zone)
+        while parent[goal_zone] is not None:
+            path.append(parent[goal_zone])
+            goal_zone = parent[goal_zone]
+        path.reverse()    
+        cost = calculate_cost(path)
+        return path, visited, cost
+    
+    return None, None, None
 
-    return [], visited_zones, total_cost
+def calculate_cost(path):
+    """
+    Calculate the total cost of the path.
+
+    Args:
+        path (list): The path to calculate the cost for.
+
+    Returns:
+        float: The total cost of the path.
+    """
+    total_cost = 0
+    for i in range(len(path) - 1):
+        total_cost += path[i].calculate_distance_between_zones(path[i + 1])
+    return total_cost

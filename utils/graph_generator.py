@@ -28,39 +28,44 @@ def generate_random_graph(num_nodes: int) -> Graph:
     name_generator = NameGenerator()
     zones = []
 
-    # Create random zones as graph nodes
+    # Step 1: Create zones (nodes)
     for _ in range(num_nodes):
         zone = Zone()
         zone.name = name_generator.generate_name()
-        zone.coordinate = Coordinate(random.uniform(-90, 90), random.uniform(-180, 180))
+        zone.coordinate = Coordinate(random.uniform(-0.5, 0.5), random.uniform(-0.5, 0.5))
         zone.population = random.randint(1000, 100000)
 
         zones.append(zone)
         graph.add_zone(zone)
 
-    # Connect zones with random edge properties
-    for i in range(num_nodes):
-        for j in range(i + 1, num_nodes):
-            if random.random() > 0.5:  # 50% chance to create an edge
-                road = Road()
-                road.cost = zones[i].calculate_distance_between_zones(zones[j])
-                road.geography = random.choice(list(Geography))
-                road.infrastructure = random.choice(list(Infrastructure))
+    # Step 2: Ensure graph connectivity using a spanning tree
+    unvisited = set(zones)
+    visited = set()
+    current_zone = unvisited.pop()
+    visited.add(current_zone)
 
-                graph.add_connection(zones[i], zones[j], road)
+    while unvisited:
+        target_zone = random.choice(list(unvisited))
+        road = Road()
+        road.cost = current_zone.calculate_distance_between_zones(target_zone)
+        road.geography = random.choice(list(Geography))
+        road.infrastructure = random.choice(list(Infrastructure))
 
-    # Ensure every zone has at least one connection
-    for zone in zones:
-        if not graph.graph[zone]:  # Check if the zone has no connections
-            # Choose another random zone to connect with
-            target_zone = random.choice([z for z in zones if z != zone])
+        graph.add_connection(current_zone, target_zone, road)
+        visited.add(target_zone)
+        unvisited.remove(target_zone)
+        current_zone = target_zone
+
+    # Step 3: Add random connections for realism
+    for _ in range(num_nodes):  # Limit number of random connections
+        zone_a, zone_b = random.sample(zones, 2)
+        if not graph.has_connection(zone_a, zone_b):  # Check for existing connection
             road = Road()
-            road.cost = random.uniform(10.0, 100.0)
-            road.geography = random.choices(list(Geography), weights=[0.2, 0.8])[0]
-            road.infrastructure = random.choices(list(Infrastructure), weights=[0.2, 0.8])[0]
+            road.cost = zone_a.calculate_distance_between_zones(zone_b)
+            road.geography = random.choice(list(Geography))
+            road.infrastructure = random.choice(list(Infrastructure))
 
-            # Create a connection between the isolated zone and the chosen target zone
-            graph.add_connection(zone, target_zone, road)
+            graph.add_connection(zone_a, zone_b, road)
 
     return graph
 

@@ -73,3 +73,11 @@ class Graph:
         """
         return any(neighbor == zone2 for neighbor, _ in self.graph.get(zone1, []))
 
+    def get_all_zones(self):
+        """
+        Get all zones in the graph.
+        
+        Returns:
+            list: All zones in the graph.
+        """
+        return list(self.graph.keys())

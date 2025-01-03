@@ -7,13 +7,15 @@ from enums.vehicle_type import VehicleType
 from utils.graph_generator import generate_random_graph, apply_randomness_to_graph, generate_map_graph
 from utils.graph_visualizer import print_graph, visualize_graph
 from map.src.plot_portugal_graph import visualize_generated_graph
-
+from metrics.metrics import benchmark_algorithm, bulk_benchmarking, visualize_comparisons
+import json
 
 class Menu:
     def __init__(self):
         self.vehicle = Vehicle(VehicleType.DRONE, autonomy=500, capacity=200)
         self.graph = None
         self.is_portugal_map = False
+        self.has_benchmark_run = False
 
     def display_main_menu(self):
         print("\nMain Menu:")
@@ -21,6 +23,7 @@ class Menu:
         print("2. Generate the map of Portugal")
         if self.graph is not None:
             print("3. Operate with the graph")
+            print("4. Metrics")
         print("0. Exit")
 
     def display_graph_menu(self):
@@ -53,6 +56,8 @@ class Menu:
                 print("Map of Portugal graph generated.")
             elif choice == '3' and self.graph is not None:
                 self.run_graph_menu()
+            elif choice == '4' and self.graph is not None:
+                self.run_metrics_menu()
             elif choice == '0':
                 print("Exiting the program...")
                 break
@@ -141,6 +146,85 @@ class Menu:
                         print("Best cost:", best_cost)
                 else:
                     print("Please generate a graph first.")
+            elif choice == '0':
+                break
+            else:
+                print("Invalid option. Please try again.")
+
+    def metrics_menu(self):
+        print("\nMetrics Menu:")
+        print("1. Execute metrics on the algorithms")
+        print("2. Execute bulk benchmarking")
+        if self.has_benchmark_run:
+            print("3. Show benchmarking results")
+        print("0. Back to Main Menu")
+
+    def run_metrics_menu(self):
+        while True:
+            self.metrics_menu()
+            choice = input("Choose an option: ")
+
+            if choice == '1':
+                print("Executing metrics on the algorithms...")
+                if self.graph is not None:
+                    start_zone_name = input("Enter the start zone: ")
+                    start_zone = self.graph.get_zone(start_zone_name)
+                    if start_zone is None:
+                        print("Invalid start zone.")
+                        continue
+
+                    goal_zone_name = input("Enter the goal zone: ")
+                    goal_zone = self.graph.get_zone(goal_zone_name)
+                    if goal_zone is None:
+                        print("Invalid goal zone.")
+                        continue
+
+                    algorithms = {
+                        "DFS": dfs,
+                        "BFS": bfs,
+                        "A* Search": a_star,
+                        "Dynamic A* Search": a_star,
+                    }
+
+                    metrics = {}
+                    for name, algorithm in algorithms.items():
+                        if name == "Dynamic A* Search":
+                            vehicle_type = input("Enter the vehicle type (drone, car, truck): ").lower()
+                            if vehicle_type == 'drone':
+                                self.vehicle = Vehicle(VehicleType.DRONE, autonomy=40, capacity=20)
+                            elif vehicle_type == 'car':
+                                self.vehicle = Vehicle(VehicleType.CAR, autonomy=500, capacity=200)
+                            elif vehicle_type == 'truck':
+                                self.vehicle = Vehicle(VehicleType.TRUCK, autonomy=800, capacity=800)
+                            else:
+                                print("Invalid vehicle type.")
+                                continue
+
+                            metrics[name] = benchmark_algorithm(algorithm, self.graph, start_zone, goal_zone, False, self.vehicle)
+                        else:
+                            metrics[name] = benchmark_algorithm(algorithm, self.graph, start_zone, goal_zone)
+                    
+                    for name, metric in metrics.items():
+                        print(f"\n{name} metrics:")
+                        for key, value in metric.items():
+                            print(f"{key}: {value}")
+                else:
+                    print("Please generate a graph first.")
+            elif choice == '2':
+                print("Executing bulk benchmarking...")
+                bulk_benchmarking()
+                self.has_benchmark_run = True
+            elif choice == '3' and self.has_benchmark_run:
+                intention = input("Do you want to use the file \"bulk_benchmarking_results.json\" see the results? (y/n): ").lower()
+                if intention == 'y':
+                    with open("bulk_benchmarking_results.json", "r") as file:
+                        results = json.load(file)
+                        visualize_comparisons(results)
+                else:
+                    filePath = input("Enter the file path: ")
+                    with open(filePath, "r") as file:
+                        results = json.load(file)
+                        visualize_comparisons(results)
             elif choice == '0':
                 break
             else:
