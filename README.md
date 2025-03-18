@@ -1,4 +1,6 @@
-# Optimization of Disaster Resource Distribution
+<h1 align="center">Optimization of Disaster Resource Distribution<img align="center" src="https://github.com/devicons/devicon/blob/master/icons/python/python-original.svg" target="_blank" title="python" alt="python" width="30" height="30"/></h1>
+
+<h1 align="center">Final Grade: 19/20💎</h1>
 
 ## Project Overview
 This project focuses on the **optimization of disaster resources' distribution** using Artificial Intelligence techniques, particularly search algorithms. The system aims to maximize efficiency in delivering supplies to zones affected by natural disasters, considering constraints such as vehicle capacities, time, and environmental conditions. Implemented in Python, the project employs both informed and uninformed search strategies to address real-world constraints dynamically.
